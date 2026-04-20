@@ -653,63 +653,58 @@ async function loadInitialData() {
 
 /**
  * Setup employee name autocomplete for #searchEmployee
- *
- * Fixes/features included:
- *   A. No double search-firing while dropdown is open
- *   B. Event delegation — no per-item listener memory leak
- *   C. Slide-fade animation via CSS .open class
- *   D. Loading spinner while fetching
- *   E. Min 2 chars before querying
- *   F. Active item scrolls into view (keyboard nav)
- *   G. Matched text highlighted in results
- *   H. 30s client-side cache per query string
- *   I. Clear (×) button when input has value
- *   J. Full ARIA (combobox / listbox / option / aria-activedescendant)
  */
 function setupEmployeeAutocomplete() {
   const input = document.getElementById("searchEmployee");
   const dropdown = document.getElementById("employeeSuggestions");
-  const clearBtn = document.getElementById("clearEmployee");
   if (!input || !dropdown) return;
 
   // ── Config ──────────────────────────────────────────────────
-  const MIN_CHARS = 2; // E
+  const MIN_CHARS = 2;
   const DEBOUNCE_MS = 200;
-  const CACHE_TTL = 30_000; // H: 30 seconds
+  const CACHE_TTL = 30_000; // 30s client-side cache
 
   // ── State ───────────────────────────────────────────────────
-  const suggestCache = new Map(); // H
+  const suggestCache = new Map();
   let activeIndex = -1;
   let isOpen = false;
 
-  // ── Open / Close ────────────────────────────────────────────
+  // ── Open / Close ─────────────────────────────────────────────
+  // display:none/block keeps dropdown fully out of layout when hidden.
+  // offsetHeight read forces a reflow so the CSS transition fires on open.
   function openDropdown() {
     if (isOpen) return;
     isOpen = true;
-    requestAnimationFrame(() => dropdown.classList.add("open")); // C
-    input.setAttribute("aria-expanded", "true"); // J
+    dropdown.style.display = "block";
+    dropdown.offsetHeight; // trigger reflow before transition
+    dropdown.classList.add("open");
+    input.setAttribute("aria-expanded", "true");
   }
 
   function closeDropdown() {
     if (!isOpen) return;
     isOpen = false;
-    dropdown.classList.remove("open"); // C
-    input.setAttribute("aria-expanded", "false"); // J
-    input.setAttribute("aria-activedescendant", ""); // J
+    dropdown.classList.remove("open");
+    input.setAttribute("aria-expanded", "false");
+    input.setAttribute("aria-activedescendant", "");
     activeIndex = -1;
+    // Set display:none after fade-out finishes (transition = 150ms)
+    setTimeout(() => {
+      if (!isOpen) dropdown.style.display = "none";
+    }, 160);
   }
 
-  // ── Keyboard active-item management (F + J) ─────────────────
+  // ── Keyboard active-item management ─────────────────────────
   function setActive(index) {
     const items = [...dropdown.querySelectorAll(".autocomplete-item")];
     items.forEach((el, i) => {
       const active = i === index;
       el.classList.toggle("active", active);
-      el.setAttribute("aria-selected", String(active)); // J
+      el.setAttribute("aria-selected", String(active));
     });
     if (index >= 0 && items[index]) {
-      items[index].scrollIntoView({ block: "nearest" }); // F
-      input.setAttribute("aria-activedescendant", items[index].id); // J
+      items[index].scrollIntoView({ block: "nearest" });
+      input.setAttribute("aria-activedescendant", items[index].id);
     } else {
       input.setAttribute("aria-activedescendant", "");
     }
@@ -731,7 +726,6 @@ function setupEmployeeAutocomplete() {
   }
 
   function highlightMatch(text, query) {
-    // G
     const safe = escapeHtml(text);
     const pattern = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     return safe.replace(
@@ -740,17 +734,11 @@ function setupEmployeeAutocomplete() {
     );
   }
 
-  function updateClearBtn() {
-    // I
-    if (!clearBtn) return;
-    clearBtn.style.display = input.value ? "flex" : "none";
-  }
-
   function renderItems(suggestions, query) {
     dropdown.innerHTML = suggestions
       .map(
         (s, i) =>
-          `<div class="autocomplete-item" role="option" aria-selected="false" id="ac-opt-${i}" data-value="${escapeHtml(s)}">${highlightMatch(s, query)}</div>`, // J + G
+          `<div class="autocomplete-item" role="option" aria-selected="false" id="ac-opt-${i}" data-value="${escapeHtml(s)}">${highlightMatch(s, query)}</div>`,
       )
       .join("");
     activeIndex = -1;
@@ -758,7 +746,6 @@ function setupEmployeeAutocomplete() {
   }
 
   function showLoading() {
-    // D
     dropdown.innerHTML =
       '<div class="autocomplete-loading"><span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Searching...</div>';
     openDropdown();
@@ -766,38 +753,24 @@ function setupEmployeeAutocomplete() {
 
   function selectItem(value) {
     input.value = value;
-    updateClearBtn();
     closeDropdown();
     searchRecords();
   }
 
-  // ── Event delegation on dropdown (B: no per-item leaks) ─────
+  // ── Event delegation — no per-item listener leaks ───────────
   dropdown.addEventListener("mousedown", (e) => {
     const item = e.target.closest(".autocomplete-item");
     if (!item) return;
-    e.preventDefault(); // keep input focused
+    e.preventDefault();
     selectItem(item.dataset.value);
   });
 
-  // ── Clear button (I) ────────────────────────────────────────
-  if (clearBtn) {
-    clearBtn.addEventListener("click", () => {
-      input.value = "";
-      updateClearBtn();
-      closeDropdown();
-      input.focus();
-      searchRecords();
-    });
-  }
-
-  // ── Fetch with cache (H) ────────────────────────────────────
+  // ── Fetch with cache ─────────────────────────────────────────
   const debouncedFetch = Utils.debounce(async (query) => {
     if (query.length < MIN_CHARS) {
-      // E
       closeDropdown();
       return;
     }
-    // H: serve from cache if fresh
     const cached = suggestCache.get(query);
     if (cached && Date.now() - cached.time < CACHE_TTL) {
       if (cached.data.length > 0) {
@@ -809,14 +782,13 @@ function setupEmployeeAutocomplete() {
       }
       return;
     }
-    showLoading(); // D
+    showLoading();
     try {
       const data = await ApiService.suggestEmployees(query);
-      // Stale-response guard: discard if input changed during network round-trip
-      if (input.value.trim() !== query) return;
+      if (input.value.trim() !== query) return; // stale-response guard
       const suggestions =
         data.success && Array.isArray(data.suggestions) ? data.suggestions : [];
-      suggestCache.set(query, { time: Date.now(), data: suggestions }); // H
+      suggestCache.set(query, { time: Date.now(), data: suggestions });
       if (suggestions.length > 0) {
         renderItems(suggestions, query);
       } else {
@@ -829,19 +801,18 @@ function setupEmployeeAutocomplete() {
     }
   }, DEBOUNCE_MS);
 
-  // ── Input handler (A: suppress table search while open) ─────
+  // ── Input handler ────────────────────────────────────────────
   input.addEventListener("input", () => {
     const q = input.value.trim();
     activeIndex = -1;
-    updateClearBtn();
     if (q.length < MIN_CHARS) {
       closeDropdown();
     } else {
-      debouncedFetch(q); // suggestions only — search fires on explicit selection
+      debouncedFetch(q);
     }
   });
 
-  // ── Keyboard nav (F: scroll active into view) ───────────────
+  // ── Keyboard navigation ──────────────────────────────────────
   input.addEventListener("keydown", (e) => {
     const items = dropdown.querySelectorAll(".autocomplete-item");
     if (e.key === "ArrowDown") {
@@ -868,12 +839,12 @@ function setupEmployeeAutocomplete() {
     }
   });
 
-  // ── Blur: close after mousedown on item has had time to fire ─
+  // ── Blur ─────────────────────────────────────────────────────
   input.addEventListener("blur", () => {
     setTimeout(closeDropdown, 150);
   });
 
-  // ── Outside click ───────────────────────────────────────────
+  // ── Outside click ─────────────────────────────────────────────
   document.addEventListener("click", (e) => {
     if (!input.contains(e.target) && !dropdown.contains(e.target)) {
       closeDropdown();
