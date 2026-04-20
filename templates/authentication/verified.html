@@ -95,9 +95,17 @@ Goal:
                                     <i class="fas fa-user-search"></i>
                                 </span>
                                 <input type="text" id="searchEmployee" class="form-control"
-                                    placeholder="Search by employee name..." autocomplete="off">
+                                    placeholder="Search by employee name..." autocomplete="off"
+                                    role="combobox" aria-expanded="false" aria-haspopup="listbox"
+                                    aria-autocomplete="list" aria-controls="employeeSuggestions"
+                                    aria-activedescendant="">
                             </div>
-                            <div id="employeeSuggestions" class="autocomplete-suggestions" style="display: none;"></div>
+                            <button type="button" id="clearEmployee" class="autocomplete-clear"
+                                    title="Clear" aria-label="Clear employee search">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <div id="employeeSuggestions" class="autocomplete-suggestions"
+                                 role="listbox" aria-label="Employee suggestions"></div>
                         </div>
                     </div>
                 </div>

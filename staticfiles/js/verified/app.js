@@ -653,87 +653,218 @@ async function loadInitialData() {
 
 /**
  * Setup employee name autocomplete for #searchEmployee
+ *
+ * Fixes/features included:
+ *   A. No double search-firing while dropdown is open
+ *   B. Event delegation — no per-item listener memory leak
+ *   C. Slide-fade animation via CSS .open class
+ *   D. Loading spinner while fetching
+ *   E. Min 2 chars before querying
+ *   F. Active item scrolls into view (keyboard nav)
+ *   G. Matched text highlighted in results
+ *   H. 30s client-side cache per query string
+ *   I. Clear (×) button when input has value
+ *   J. Full ARIA (combobox / listbox / option / aria-activedescendant)
  */
 function setupEmployeeAutocomplete() {
   const input = document.getElementById("searchEmployee");
   const dropdown = document.getElementById("employeeSuggestions");
+  const clearBtn = document.getElementById("clearEmployee");
   if (!input || !dropdown) return;
 
+  // ── Config ──────────────────────────────────────────────────
+  const MIN_CHARS = 2;      // E
+  const DEBOUNCE_MS = 200;
+  const CACHE_TTL = 30_000; // H: 30 seconds
+
+  // ── State ───────────────────────────────────────────────────
+  const suggestCache = new Map(); // H
   let activeIndex = -1;
+  let isOpen = false;
 
-  const debouncedFetch = Utils.debounce(async (query) => {
-    if (!query) {
-      dropdown.style.display = "none";
-      return;
-    }
-    try {
-      const data = await ApiService.suggestEmployees(query);
-      if (data.success && data.suggestions && data.suggestions.length > 0) {
-        dropdown.innerHTML = data.suggestions
-          .map(
-            (s) =>
-              `<div class="autocomplete-item" data-value="${s}">${s}</div>`,
-          )
-          .join("");
-        activeIndex = -1;
-        dropdown.style.display = "block";
+  // ── Open / Close ────────────────────────────────────────────
+  function openDropdown() {
+    if (isOpen) return;
+    isOpen = true;
+    requestAnimationFrame(() => dropdown.classList.add("open")); // C
+    input.setAttribute("aria-expanded", "true"); // J
+  }
 
-        dropdown.querySelectorAll(".autocomplete-item").forEach((item) => {
-          item.addEventListener("mousedown", (e) => {
-            e.preventDefault();
-            input.value = item.dataset.value;
-            dropdown.style.display = "none";
-            searchRecords();
-          });
-        });
-      } else {
-        dropdown.innerHTML =
-          '<div class="autocomplete-no-results">No results found</div>';
-        dropdown.style.display = "block";
-      }
-    } catch {
-      dropdown.style.display = "none";
-    }
-  }, 200);
-
-  input.addEventListener("input", () => {
+  function closeDropdown() {
+    if (!isOpen) return;
+    isOpen = false;
+    dropdown.classList.remove("open"); // C
+    input.setAttribute("aria-expanded", "false"); // J
+    input.setAttribute("aria-activedescendant", ""); // J
     activeIndex = -1;
-    debouncedFetch(input.value.trim());
+  }
+
+  // ── Keyboard active-item management (F + J) ─────────────────
+  function setActive(index) {
+    const items = [...dropdown.querySelectorAll(".autocomplete-item")];
+    items.forEach((el, i) => {
+      const active = i === index;
+      el.classList.toggle("active", active);
+      el.setAttribute("aria-selected", String(active)); // J
+    });
+    if (index >= 0 && items[index]) {
+      items[index].scrollIntoView({ block: "nearest" }); // F
+      input.setAttribute("aria-activedescendant", items[index].id); // J
+    } else {
+      input.setAttribute("aria-activedescendant", "");
+    }
+  }
+
+  // ── Helpers ─────────────────────────────────────────────────
+  function escapeHtml(text) {
+    return String(text).replace(
+      /[&<>"']/g,
+      (c) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]),
+    );
+  }
+
+  function highlightMatch(text, query) { // G
+    const safe = escapeHtml(text);
+    const pattern = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return safe.replace(
+      new RegExp(`(${pattern})`, "gi"),
+      '<mark class="autocomplete-match">$1</mark>',
+    );
+  }
+
+  function updateClearBtn() { // I
+    if (!clearBtn) return;
+    clearBtn.style.display = input.value ? "flex" : "none";
+  }
+
+  function renderItems(suggestions, query) {
+    dropdown.innerHTML = suggestions
+      .map(
+        (s, i) =>
+          `<div class="autocomplete-item" role="option" aria-selected="false" id="ac-opt-${i}" data-value="${escapeHtml(s)}">${highlightMatch(s, query)}</div>`, // J + G
+      )
+      .join("");
+    activeIndex = -1;
+    openDropdown();
+  }
+
+  function showLoading() { // D
+    dropdown.innerHTML =
+      '<div class="autocomplete-loading"><span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Searching...</div>';
+    openDropdown();
+  }
+
+  function selectItem(value) {
+    input.value = value;
+    updateClearBtn();
+    closeDropdown();
+    searchRecords();
+  }
+
+  // ── Event delegation on dropdown (B: no per-item leaks) ─────
+  dropdown.addEventListener("mousedown", (e) => {
+    const item = e.target.closest(".autocomplete-item");
+    if (!item) return;
+    e.preventDefault(); // keep input focused
+    selectItem(item.dataset.value);
   });
 
+  // ── Clear button (I) ────────────────────────────────────────
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      updateClearBtn();
+      closeDropdown();
+      input.focus();
+      searchRecords();
+    });
+  }
+
+  // ── Fetch with cache (H) ────────────────────────────────────
+  const debouncedFetch = Utils.debounce(async (query) => {
+    if (query.length < MIN_CHARS) { // E
+      closeDropdown();
+      return;
+    }
+    // H: serve from cache if fresh
+    const cached = suggestCache.get(query);
+    if (cached && Date.now() - cached.time < CACHE_TTL) {
+      if (cached.data.length > 0) {
+        renderItems(cached.data, query);
+      } else {
+        dropdown.innerHTML = '<div class="autocomplete-no-results">No results found</div>';
+        openDropdown();
+      }
+      return;
+    }
+    showLoading(); // D
+    try {
+      const data = await ApiService.suggestEmployees(query);
+      // Stale-response guard: discard if input changed during network round-trip
+      if (input.value.trim() !== query) return;
+      const suggestions =
+        data.success && Array.isArray(data.suggestions) ? data.suggestions : [];
+      suggestCache.set(query, { time: Date.now(), data: suggestions }); // H
+      if (suggestions.length > 0) {
+        renderItems(suggestions, query);
+      } else {
+        dropdown.innerHTML = '<div class="autocomplete-no-results">No results found</div>';
+        openDropdown();
+      }
+    } catch {
+      closeDropdown();
+    }
+  }, DEBOUNCE_MS);
+
+  // ── Input handler (A: suppress table search while open) ─────
+  input.addEventListener("input", () => {
+    const q = input.value.trim();
+    activeIndex = -1;
+    updateClearBtn();
+    if (q.length < MIN_CHARS) {
+      closeDropdown();
+    } else {
+      debouncedFetch(q); // suggestions only — search fires on explicit selection
+    }
+  });
+
+  // ── Keyboard nav (F: scroll active into view) ───────────────
   input.addEventListener("keydown", (e) => {
     const items = dropdown.querySelectorAll(".autocomplete-item");
     if (e.key === "ArrowDown") {
+      if (!isOpen || items.length === 0) return;
       e.preventDefault();
       activeIndex = Math.min(activeIndex + 1, items.length - 1);
-      items.forEach((item, i) =>
-        item.classList.toggle("active", i === activeIndex),
-      );
+      setActive(activeIndex);
     } else if (e.key === "ArrowUp") {
+      if (!isOpen || items.length === 0) return;
       e.preventDefault();
       activeIndex = Math.max(activeIndex - 1, -1);
-      items.forEach((item, i) =>
-        item.classList.toggle("active", i === activeIndex),
-      );
-    } else if (e.key === "Enter" && activeIndex >= 0) {
+      setActive(activeIndex);
+    } else if (e.key === "Enter") {
       e.preventDefault();
-      input.value = items[activeIndex].dataset.value;
-      dropdown.style.display = "none";
-      searchRecords();
-    } else if (e.key === "Escape") {
-      dropdown.style.display = "none";
+      if (isOpen && activeIndex >= 0 && items[activeIndex]) {
+        selectItem(items[activeIndex].dataset.value);
+      } else {
+        closeDropdown();
+        searchRecords();
+      }
+    } else if (e.key === "Escape" && isOpen) {
+      e.preventDefault();
+      closeDropdown();
     }
   });
 
+  // ── Blur: close after mousedown on item has had time to fire ─
   input.addEventListener("blur", () => {
-    setTimeout(() => {
-      dropdown.style.display = "none";
-    }, 150);
+    setTimeout(closeDropdown, 150);
   });
 
+  // ── Outside click ───────────────────────────────────────────
   document.addEventListener("click", (e) => {
     if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.style.display = "none";
+      closeDropdown();
     }
   });
 }
@@ -746,18 +877,13 @@ function setupEventListeners() {
   // Create debounced search function (500ms delay)
   const debouncedSearch = Utils.debounce(searchRecords, 500);
 
-  // Auto-search when filters change
+  // Auto-search when status filter changes (employee search is handled by autocomplete)
   const statusTN = document.getElementById("statusTN");
-  const searchEmployee = document.getElementById("searchEmployee");
-
   if (statusTN) {
     statusTN.addEventListener("change", debouncedSearch);
   }
-  if (searchEmployee) {
-    searchEmployee.addEventListener("input", debouncedSearch);
-  }
 
-  // Employee name autocomplete
+  // Employee name autocomplete (manages its own search triggers — A: no double-fire)
   setupEmployeeAutocomplete();
 
   // Status label click

@@ -496,3 +496,23 @@ INFO 2026-04-20 17:25:22,621 verified_views [verified][search_api] employee='bui
 INFO 2026-04-20 17:25:23,788 verified_views [verified][search_api] result_count=0
 INFO 2026-04-20 17:25:30,512 server Killed 0 pending application instances
 INFO 2026-04-20 17:25:30,543 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 17:38:52,345 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:38:52,345 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 17:38:52,345 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:38:52,345 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 17:38:53,721 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 17:38:53,987 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 17:38:54,092 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 17:38:54,547 log Not Found: /handle-browser-close/
+WARNING 2026-04-20 17:38:54,718 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+ERROR 2026-04-20 17:38:56,183 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-20 17:38:56,998 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-20 17:38:58,089 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 17:39:05,223 verified_views [verified][search_api] employee='tucodon' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'tucodon', '$options': 'i'}}
+INFO 2026-04-20 17:39:06,373 verified_views [verified][search_api] result_count=15
+INFO 2026-04-20 17:39:08,440 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 17:39:09,862 verified_views [verified][search_api] result_count=1065
+INFO 2026-04-20 17:39:16,523 verified_views [verified][search_api] employee='tuananhhmt' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'tuananhhmt', '$options': 'i'}}
+INFO 2026-04-20 17:39:17,725 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 17:39:32,994 server Killed 0 pending application instances
+INFO 2026-04-20 17:39:33,030 mongodb Successfully closed MongoDB connection
