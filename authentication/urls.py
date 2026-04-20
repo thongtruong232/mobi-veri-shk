@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/get-user-office/', views.get_user_office, name='get_user_office'),
     path('api/get-api-data/', views.get_api_data, name='get_api_data'),
     path('api/get-reserve-mail-count/', views.get_reserve_mail_count, name='get_reserve_mail_count'),
+    path('api/get-creators-by-office/', views.get_creators_by_office, name='get_creators_by_office'),
     path('api/save-apikey-dongvan/', views.save_apikey_dongvan, name='save_apikey_dongvan'),
     path('api/save-apikey-phapsu/', views.save_apikey_phapsu, name='save_apikey_phapsu'),
     path('api/save-apikey-fmail/', views.save_apikey_fmail, name='save_apikey_fmail'),

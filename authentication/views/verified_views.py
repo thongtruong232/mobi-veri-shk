@@ -2,6 +2,7 @@ from authentication.mongodb import MongoDBConnection
 from authentication.office_utils import (
     get_collection_by_office,
     get_long_term_collection_name,
+    OFFICE_NAMES,
 )
 import logging
 from authentication.utils import get_current_time
@@ -72,17 +73,10 @@ def employee_verified_view(request):
             if created_by:
                 query['created_by'] = created_by
 
-            # Không tải toàn bộ dữ liệu để tránh chậm, dữ liệu sẽ được load qua API
-            try:
-                logger.info("[verified][employee_view] creators_count=%s", len(creators))
-            except Exception:
-                pass
+            # Dữ liệu sẽ được load qua API, chỉ cần truyền danh sách office cho dropdown
             return render(request, 'authentication/verified.html', {
+                'offices': OFFICE_NAMES,
                 'textnow_accounts': [],
-                'creators': creators,
-                'created_by': created_by,
-                'current_page': 1,
-                'total_pages': 1
             })
 
     except Exception as e:
@@ -103,46 +97,40 @@ def search_textnow_api(request):
             db = mongo.db
             # Lấy session data từ request
             user_data = request._session_data
-            
-            office = user_data.get('office', '')
-            try:
-                logger.info("[verified][search_api] office_raw=%r user=%r", office, user_data.get('username'))
-            except Exception:
-                pass
-            collection = get_collection_by_office(mongo, office, 'emails')
-            if not office:
-                return JsonResponse({'success': False, 'error': 'Unable to determine your office.'}, status=400)
-            if collection is None:
-                try:
-                    logger.error("[verified][search_api] unsupported_office office=%r user=%r", office, user_data.get('username'))
-                except Exception:
-                    pass
-                return JsonResponse({'success': False, 'error': f'Unsupported office: {office}'}, status=400)
-            
+
             # Lấy parameters từ request
             status_account_TN = request.GET.get('status_account_TN')
             status_account_TF = request.GET.get('status_account_TF')
-            search_date = request.GET.get('date', get_current_time().strftime('%Y-%m-%d'))
+            # Luôn dùng ngày hôm nay — không nhận date từ client
+            search_date = get_current_time().strftime('%Y-%m-%d')
             created_by = request.GET.get('created_by')
-            try:
-                page = max(1, int(request.GET.get('page', '1')))
-            except Exception:
-                page = 1
+            office_param = request.GET.get('office', '')  # '' = tất cả
             try:
                 page_size = int(request.GET.get('page_size', '2000'))
             except Exception:
                 page_size = 2000
             page_size = max(10, min(page_size, 2000))
-            
+
+            # Xác định danh sách collections cần query
+            if office_param and office_param in OFFICE_NAMES:
+                office_list = [office_param]
+            else:
+                office_list = OFFICE_NAMES
+
+            collections = []
+            for off in office_list:
+                col = get_collection_by_office(mongo, off, 'emails')
+                if col is not None:
+                    collections.append(col)
+
+            if not collections:
+                return JsonResponse({'success': False, 'error': 'No valid office collections found.'}, status=400)
+
             # Xây dựng query
             query = {}
-            
-            # Thêm điều kiện ngày nếu có
-            if search_date:
-                query['created_at'] = {'$regex': f'^{search_date}'}
+            query['created_at'] = {'$regex': f'^{search_date}'}
 
             if status_account_TN:
-                # Hỗ trợ lọc nhiều trạng thái qua dấu phẩy: success,resend link
                 if ',' in status_account_TN:
                     statuses = [s.strip() for s in status_account_TN.split(',') if s.strip()]
                     if statuses:
@@ -151,7 +139,6 @@ def search_textnow_api(request):
                     query['status_account_TN'] = status_account_TN
 
             if status_account_TF:
-                # Hỗ trợ lọc nhiều trạng thái TextFree qua dấu phẩy
                 if ',' in status_account_TF:
                     statuses = [s.strip() for s in status_account_TF.split(',') if s.strip()]
                     if statuses:
@@ -159,59 +146,58 @@ def search_textnow_api(request):
                 else:
                     query['status_account_TF'] = status_account_TF
 
-            # Mặc định loại bỏ trạng thái 'new' nếu không gửi bất kỳ bộ lọc trạng thái nào
             if not status_account_TN and not status_account_TF:
-                # Chỉ loại theo TextNow để giữ nguyên hành vi lọc TextFree nếu có nhu cầu sau này
                 query['status_account_TN'] = {'$ne': 'new'}
 
             if created_by:
                 query['created_by'] = created_by
 
-            # Projection chỉ lấy các field cần thiết
             projection = {
-                '_id': 1,
-                'email': 1,
-                'password_email': 1,
-                'pass_TN': 1,
-                'full_information': 1,
-                'status_account_TN': 1,
-                'status_account_TF': 1,
-                'created_at': 1,
-                'created_by': 1,
+                '_id': 1, 'email': 1, 'password_email': 1, 'pass_TN': 1,
+                'full_information': 1, 'status_account_TN': 1,
+                'status_account_TF': 1, 'created_at': 1, 'created_by': 1,
             }
+
             try:
-                logger.info("[verified][search_api] query=%s", query)
+                logger.info("[verified][search_api] office_param=%r offices=%s query=%s", office_param, office_list, query)
             except Exception:
                 pass
-            total = collection.count_documents(query)
-            cursor = (collection
-                      .find(query, projection)
-                      .sort('created_at', -1)
-                      .skip((page - 1) * page_size)
-                      .limit(page_size))
-            textnow_accounts = list(cursor)
-            for account in textnow_accounts:
-                account['_id'] = str(account['_id'])
+
+            # Query từng collection, merge kết quả
+            textnow_accounts = []
+            creators_set = set()
+            for col in collections:
+                cursor = col.find(query, projection).sort('created_at', -1).limit(page_size)
+                for account in cursor:
+                    account['_id'] = str(account['_id'])
+                    textnow_accounts.append(account)
+                for c in col.distinct('created_by', {'created_at': {'$regex': f'^{search_date}'}}):
+                    if c:
+                        creators_set.add(c)
+
+            # Sắp xếp theo created_at giảm dần sau khi merge
+            textnow_accounts.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+            textnow_accounts = textnow_accounts[:page_size]
+
+            creators = sorted(creators_set)
+
             if '_id' in user_data:
                 user_data['_id'] = str(user_data['_id'])
-
-            # Lấy danh sách người tạo
-            creators = list(collection.distinct('created_by'))
-            creators = sorted([creator for creator in creators if creator])
 
             try:
                 logger.info("[verified][search_api] result_count=%s creators=%s", len(textnow_accounts), len(creators))
             except Exception:
                 pass
+
             return JsonResponse({
                 'success': True,
                 'data': textnow_accounts,
                 'creators': creators,
                 'pagination': {
-                    'total': total,
-                    'page': page,
+                    'total': len(textnow_accounts),
+                    'page': 1,
                     'page_size': page_size,
-                    'total_pages': (total + page_size - 1) // page_size
+                    'total_pages': 1,
                 }
             })
     except Exception as e:
@@ -530,4 +516,39 @@ def save_gmail_recovery_accounts(request):
             })
     except Exception as e:
         logger.error(f"Error in save_gmail_recovery_accounts: {str(e)}", exc_info=True)
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+def get_creators_by_office(request):
+    """
+    Trả về danh sách created_by theo office và ngày hôm nay.
+    GET ?office=Hàn Mạc Tử  → distinct creators của office đó
+    GET (không office)       → merge creators của tất cả OFFICE_NAMES
+    """
+    try:
+        with MongoDBConnection() as mongo:
+            if mongo is None or mongo.db is None:
+                return JsonResponse({'success': False, 'error': 'Unable to connect to database'}, status=500)
+
+            office_param = request.GET.get('office', '').strip()
+            today = get_current_time().strftime('%Y-%m-%d')
+            date_filter = {'created_at': {'$regex': f'^{today}'}}
+
+            if office_param and office_param in OFFICE_NAMES:
+                office_list = [office_param]
+            else:
+                office_list = OFFICE_NAMES
+
+            creators_set = set()
+            for off in office_list:
+                col = get_collection_by_office(mongo, off, 'emails')
+                if col is not None:
+                    for c in col.distinct('created_by', date_filter):
+                        if c:
+                            creators_set.add(c)
+
+            return JsonResponse({'success': True, 'creators': sorted(creators_set)})
+    except Exception as e:
+        logger.error(f"Error in get_creators_by_office: {str(e)}", exc_info=True)
         return JsonResponse({'success': False, 'error': str(e)}, status=500)

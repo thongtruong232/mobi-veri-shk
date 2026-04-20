@@ -316,3 +316,72 @@ INFO 2026-04-18 14:30:57,424 verified_views [verified][search_api] office_raw='H
 INFO 2026-04-18 14:30:57,506 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$ne': 'new'}}
 INFO 2026-04-18 14:30:58,340 verified_views [verified][search_api] result_count=380 creators=21
 WARNING 2026-04-18 14:48:24,308 log Not Found: /handle-browser-close/
+INFO 2026-04-20 12:17:33,897 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 12:17:33,923 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 12:17:33,926 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 12:17:33,929 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 12:17:41,974 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 12:17:42,588 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 12:17:42,707 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-20 12:17:43,055 verified_views [verified][employee_view] creators_count=22
+WARNING 2026-04-20 12:17:44,482 log Not Found: /favicon.ico
+WARNING 2026-04-20 12:18:38,744 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-20 12:20:05,061 log Not Found: /handle-browser-close/
+INFO 2026-04-20 12:20:52,553 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-20 12:20:52,806 verified_views [verified][employee_view] creators_count=22
+WARNING 2026-04-20 12:20:53,123 log Not Found: /favicon.ico
+INFO 2026-04-20 12:33:08,509 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 12:33:08,510 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 12:33:08,511 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 12:33:08,511 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 12:33:10,317 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 12:33:10,526 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 12:33:10,608 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-20 12:33:10,892 verified_views [verified][employee_view] creators_count=22
+WARNING 2026-04-20 12:33:10,967 log Not Found: /handle-browser-close/
+INFO 2026-04-20 12:33:18,271 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-20 12:33:18,331 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-19'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 12:33:19,197 verified_views [verified][search_api] result_count=1334 creators=22
+INFO 2026-04-20 12:33:29,781 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-20 12:33:29,837 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 12:33:30,499 verified_views [verified][search_api] result_count=270 creators=22
+WARNING 2026-04-20 12:33:40,735 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-04-20 13:05:54,739 server Killed 0 pending application instances
+INFO 2026-04-20 13:05:54,773 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 13:05:57,729 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 13:05:57,730 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 13:05:57,730 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 13:05:57,731 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 13:05:58,807 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 13:05:59,111 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 13:05:59,207 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 13:05:59,392 log Not Found: /handle-browser-close/
+INFO 2026-04-20 13:06:39,048 server Killed 0 pending application instances
+INFO 2026-04-20 13:06:39,079 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 13:06:41,972 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 13:06:41,972 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 13:06:41,972 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 13:06:41,972 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 13:06:42,819 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 13:06:43,072 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 13:06:43,153 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-20 13:06:43,403 verified_views [verified][employee_view] creators_count=22
+WARNING 2026-04-20 13:06:43,498 log Not Found: /handle-browser-close/
+INFO 2026-04-20 13:17:08,818 server Killed 0 pending application instances
+INFO 2026-04-20 13:17:08,859 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 13:17:11,988 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 13:17:11,988 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 13:17:11,988 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 13:17:11,988 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 13:17:12,956 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 13:17:13,282 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 13:17:13,414 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 13:17:13,874 log Not Found: /handle-browser-close/
+WARNING 2026-04-20 14:49:11,015 log Not Found: /handle-browser-close/
+INFO 2026-04-20 16:53:27,287 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 16:53:27,287 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 16:53:27,538 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 16:53:27,771 verified_views [verified][search_api] office_param='' offices=['Hàn Mạc Tử', 'Trung Tiến', 'Bùi Việt'] query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 16:53:30,654 verified_views [verified][search_api] result_count=1054 creators=11
+INFO 2026-04-20 16:53:44,294 server Killed 0 pending application instances
+INFO 2026-04-20 16:53:44,324 mongodb Successfully closed MongoDB connection

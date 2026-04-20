@@ -5,6 +5,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Offices displayed in the UI dropdown (Đà Nẵng is excluded per product decision)
+OFFICE_NAMES = ['Hàn Mạc Tử', 'Trung Tiến', 'Bùi Việt']
 
 # Centralized office-to-collection mapping
 OFFICE_TO_EMAIL_COLLECTION = {

@@ -426,12 +426,13 @@ const ApiService = (function() {
     async function searchTextNow(params = {}, forceRefresh = false) {
         const searchParams = new URLSearchParams();
         
-        if (params.date) searchParams.append('date', params.date);
         if (params.created_by) searchParams.append('created_by', params.created_by);
         if (params.status_account_TN) searchParams.append('status_account_TN', params.status_account_TN);
         if (params.status_account_TF) searchParams.append('status_account_TF', params.status_account_TF);
         if (params.page) searchParams.append('page', params.page);
         if (params.page_size) searchParams.append('page_size', params.page_size);
+        if (params.office) searchParams.append('office', params.office);
+        // Note: date is intentionally NOT sent — server always uses today
 
         const queryString = searchParams.toString();
         const cacheKey = `search:${queryString}`;
@@ -446,6 +447,16 @@ const ApiService = (function() {
             setCache(cacheKey, data);
             return data;
         });
+    }
+
+    /**
+     * Get list of creators (created_by) filtered by office and today
+     * @param {string} office - Office name, or '' for all offices
+     * @returns {Promise<Object>} {success, creators[]}
+     */
+    async function getCreatorsByOffice(office = '') {
+        const params = office ? `?office=${encodeURIComponent(office)}` : '';
+        return get(`/api/get-creators-by-office/${params}`);
     }
 
     /**
@@ -802,6 +813,7 @@ const ApiService = (function() {
         fetchUserOffice,
         fetchApiKeys,
         searchTextNow,
+        getCreatorsByOffice,
         updateTextNowStatus,
         checkEmployeePassword,
         getEmployeePasswords,
