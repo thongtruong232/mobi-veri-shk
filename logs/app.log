@@ -616,3 +616,36 @@ INFO 2026-04-20 18:16:39,139 verified_views [verified][search_api] employee='' q
 INFO 2026-04-20 18:16:40,457 verified_views [verified][search_api] result_count=0
 INFO 2026-04-20 18:16:56,185 server Killed 0 pending application instances
 INFO 2026-04-20 18:16:56,223 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 18:17:46,768 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 18:17:46,769 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 18:17:46,769 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 18:17:46,770 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 18:17:50,324 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 18:17:50,574 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 18:17:50,691 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 18:17:51,075 log Not Found: /handle-browser-close/
+ERROR 2026-04-20 18:17:51,844 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-20 18:17:52,329 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-20 18:17:53,625 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 18:17:59,269 verified_views [verified][search_api] employee='dinhtranhmt' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'dinhtranhmt', '$options': 'i'}}
+INFO 2026-04-20 18:18:00,642 verified_views [verified][search_api] result_count=197
+WARNING 2026-04-20 18:18:00,665 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-04-20 18:20:41,265 server Killed 0 pending application instances
+INFO 2026-04-20 18:20:41,308 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 18:20:44,722 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 18:20:44,724 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 18:20:44,724 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 18:20:44,725 server Listening on TCP address 0.0.0.0:8001
+WARNING 2026-04-20 18:20:46,507 log Not Found: /handle-browser-close/
+INFO 2026-04-20 18:20:46,507 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 18:20:46,790 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 18:20:46,896 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 18:20:47,833 log Not Found: /favicon.ico
+ERROR 2026-04-20 18:20:48,913 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-20 18:20:49,234 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-20 18:20:50,433 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 18:20:54,143 verified_views [verified][search_api] employee='khanhhmt' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'khanhhmt', '$options': 'i'}}
+INFO 2026-04-20 18:20:55,427 verified_views [verified][search_api] result_count=214
+WARNING 2026-04-20 18:20:57,812 log Not Found: /handle-browser-close/
+INFO 2026-04-20 18:21:04,656 server Killed 0 pending application instances
+INFO 2026-04-20 18:21:04,694 mongodb Successfully closed MongoDB connection

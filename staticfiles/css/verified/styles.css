@@ -146,12 +146,13 @@ body::before {
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
-.card,
 .modal-content,
-.mail-card-parent,
-.table-responsive {
+.mail-card-parent {
   contain: layout style;
 }
+/* NOTE: .card and .table-responsive excluded — contain:layout creates a
+   stacking context that clips the autocomplete dropdown (position:absolute)
+   and breaks sticky table headers. */
 #verifiedTableBody {
   contain: content;
 }
@@ -1332,7 +1333,7 @@ body::before {
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  z-index: 1050;
+  z-index: 2000;
   background: var(--bg-surface, #fff);
   border: 1px solid rgba(61, 99, 221, 0.18);
   border-radius: 10px;
