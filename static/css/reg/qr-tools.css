@@ -1,0 +1,116 @@
+/* QR Tools Widget - Fixed Bottom-Left */
+
+.qr-tools {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 2000;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  gap: 16px;
+  max-width: 92vw;
+  flex-wrap: wrap;
+}
+
+.qr-tools #qrCodeImage {
+  width: 96px;
+  height: 86px;
+  transform: none;
+  margin: 0;
+}
+
+.qr-tools #qrCodeName {
+  font-size: 1.1rem !important;
+}
+
+.qr-tools #qrCodeSelect {
+  width: 200px !important;
+  padding: 6px 8px;
+}
+
+/* VN QR Tools Widget - Fixed Bottom-Right */
+.qr-tools-vn {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2000;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  gap: 16px;
+  max-width: 92vw;
+  flex-wrap: wrap;
+}
+
+.qr-tools-vn #qrCodeImageVn {
+  width: 96px;
+  height: 86px;
+  transform: none;
+  margin: 0;
+}
+
+.qr-tools-vn #qrCodeNameVn {
+  font-size: 1.1rem !important;
+}
+
+.qr-tools-vn #qrCodeSelectVn {
+  width: 200px !important;
+  padding: 6px 8px;
+}
+
+/* Swap QR Button */
+.swap-qr-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f1f3f5;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  z-index: 1;
+}
+
+.swap-qr-btn:hover {
+  background: #e9ecef;
+}
+
+.swap-qr-btn:active {
+  transform: scale(0.96);
+}
+
+/* Position Swap Classes */
+.qr-tools.on-right {
+  left: auto;
+  right: 16px;
+}
+
+.qr-tools-vn.on-left {
+  right: auto;
+  left: 16px;
+}
+
+/* QR Code Image Styles */
+#qrCodeImage {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s;
+  transform: scale(1.5);
+  z-index: 10;
+  margin-right: 30px;
+  margin-left: 30px;
+  margin-bottom: 10px;
+}

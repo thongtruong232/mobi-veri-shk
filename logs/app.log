@@ -1,0 +1,318 @@
+INFO 2026-04-17 21:06:12,999 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-17 21:06:13,000 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-17 21:06:13,000 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-17 21:06:13,002 server Listening on TCP address 0.0.0.0:8001
+WARNING 2026-04-17 21:06:28,764 log Not Found: /
+WARNING 2026-04-17 21:06:28,861 log Not Found: /favicon.ico
+WARNING 2026-04-18 12:09:22,931 log Not Found: /
+WARNING 2026-04-18 12:09:23,038 log Not Found: /favicon.ico
+WARNING 2026-04-18 12:09:56,823 log Not Found: /
+INFO 2026-04-18 12:41:07,794 server Killed 0 pending application instances
+INFO 2026-04-18 12:41:11,184 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:41:11,185 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:41:11,185 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:41:11,186 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:41:13,342 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:41:13,678 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:41:13,763 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:41:14,065 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:41:14,221 log Internal Server Error: /verified/
+INFO 2026-04-18 12:42:17,707 autoreload Watching for file changes with StatReloader
+INFO 2026-04-18 12:42:31,740 autoreload D:\python file\hethong\mobi-shk\authentication\views\verified_views.py changed, reloading.
+INFO 2026-04-18 12:43:27,101 server Killed 0 pending application instances
+INFO 2026-04-18 12:43:27,149 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:43:30,548 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:43:30,558 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:43:30,558 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:43:30,560 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:43:31,477 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:43:31,785 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:43:31,876 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:43:32,185 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:43:32,253 log Internal Server Error: /verified/
+INFO 2026-04-18 12:45:38,271 server Killed 0 pending application instances
+INFO 2026-04-18 12:45:38,318 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:45:41,006 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:45:41,006 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:45:41,021 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:45:41,022 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:45:42,189 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:45:42,514 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:45:42,645 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:45:42,953 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:45:43,090 log Internal Server Error: /verified/
+INFO 2026-04-18 12:46:06,324 server Killed 0 pending application instances
+INFO 2026-04-18 12:46:06,372 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:46:09,005 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:46:09,006 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:46:09,006 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:46:09,008 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:46:10,042 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:46:10,291 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:46:10,376 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:46:10,592 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:46:10,658 log Internal Server Error: /verified/
+INFO 2026-04-18 12:46:44,228 server Killed 0 pending application instances
+INFO 2026-04-18 12:46:44,245 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:46:49,261 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:46:49,261 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:46:49,261 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:46:49,261 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:46:50,189 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:46:50,513 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:46:50,643 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:46:50,977 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:46:51,048 log Internal Server Error: /verified/
+INFO 2026-04-18 12:47:14,359 server Killed 0 pending application instances
+INFO 2026-04-18 12:47:14,405 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:47:16,948 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:47:16,950 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:47:16,950 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:47:16,951 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:47:17,899 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:47:18,218 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:47:18,326 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:47:18,615 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 12:47:18,772 log Not Found: /static/css/verified/styles.css
+WARNING 2026-04-18 12:47:18,794 log Not Found: /static/css/verified/ui-enhancements.css
+WARNING 2026-04-18 12:47:18,812 log Not Found: /static/js/verified/modules/utils.js
+WARNING 2026-04-18 12:47:18,826 log Not Found: /static/js/verified/modules/security.js
+WARNING 2026-04-18 12:47:18,841 log Not Found: /static/js/verified/modules/error-handler.js
+WARNING 2026-04-18 12:47:18,855 log Not Found: /static/js/verified/modules/form-validator.js
+WARNING 2026-04-18 12:47:18,869 log Not Found: /static/js/verified/modules/accessibility.js
+WARNING 2026-04-18 12:47:18,886 log Not Found: /static/js/verified/modules/loading-states.js
+WARNING 2026-04-18 12:47:18,899 log Not Found: /static/js/verified/modules/state-manager.js
+WARNING 2026-04-18 12:47:18,911 log Not Found: /static/js/verified/modules/ui-helpers.js
+WARNING 2026-04-18 12:47:18,919 log Not Found: /static/js/verified/modules/clipboard.js
+WARNING 2026-04-18 12:47:18,940 log Not Found: /static/js/verified/modules/api-service.js
+WARNING 2026-04-18 12:47:18,955 log Not Found: /static/js/verified/modules/table-manager.js
+WARNING 2026-04-18 12:47:18,967 log Not Found: /static/js/verified/modules/mail-operations.js
+WARNING 2026-04-18 12:47:18,979 log Not Found: /static/js/verified/app.js
+INFO 2026-04-18 12:50:03,961 server Killed 0 pending application instances
+INFO 2026-04-18 12:50:04,008 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:50:08,766 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:50:08,766 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:50:08,766 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:50:08,766 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:50:09,786 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:50:10,080 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:50:10,185 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:50:10,449 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:50:10,517 log Internal Server Error: /verified/
+INFO 2026-04-18 12:50:16,799 server Killed 0 pending application instances
+INFO 2026-04-18 12:50:16,837 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:50:19,777 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:50:19,777 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:50:19,777 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:50:19,777 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:50:21,627 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:50:21,899 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:50:22,005 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:50:22,284 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:50:22,358 log Internal Server Error: /verified/
+INFO 2026-04-18 12:50:59,020 server Killed 0 pending application instances
+INFO 2026-04-18 12:50:59,057 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:51:01,889 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:51:01,890 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:51:01,890 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:51:01,891 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:51:02,795 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:51:03,053 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:51:03,163 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:51:03,438 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 12:51:03,581 log Not Found: /static/css/verified/styles.css
+WARNING 2026-04-18 12:51:03,595 log Not Found: /static/css/verified/ui-enhancements.css
+WARNING 2026-04-18 12:51:03,610 log Not Found: /static/js/verified/modules/utils.js
+WARNING 2026-04-18 12:51:03,623 log Not Found: /static/js/verified/modules/security.js
+WARNING 2026-04-18 12:51:03,638 log Not Found: /static/js/verified/modules/error-handler.js
+WARNING 2026-04-18 12:51:03,653 log Not Found: /static/js/verified/modules/form-validator.js
+WARNING 2026-04-18 12:51:03,667 log Not Found: /static/js/verified/modules/accessibility.js
+WARNING 2026-04-18 12:51:03,681 log Not Found: /static/js/verified/modules/loading-states.js
+WARNING 2026-04-18 12:51:03,693 log Not Found: /static/js/verified/modules/state-manager.js
+WARNING 2026-04-18 12:51:03,706 log Not Found: /static/js/verified/modules/ui-helpers.js
+WARNING 2026-04-18 12:51:03,717 log Not Found: /static/js/verified/modules/clipboard.js
+WARNING 2026-04-18 12:51:03,728 log Not Found: /static/js/verified/modules/api-service.js
+WARNING 2026-04-18 12:51:03,742 log Not Found: /static/js/verified/modules/table-manager.js
+WARNING 2026-04-18 12:51:03,752 log Not Found: /static/js/verified/modules/mail-operations.js
+WARNING 2026-04-18 12:51:03,764 log Not Found: /static/js/verified/app.js
+WARNING 2026-04-18 12:51:03,778 log Not Found: /static/css/verified/ui-enhancements.css
+INFO 2026-04-18 12:51:23,922 server Killed 0 pending application instances
+INFO 2026-04-18 12:51:23,963 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:51:27,024 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:51:27,024 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:51:27,039 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:51:27,039 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:51:29,042 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:51:29,365 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:51:29,491 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:51:29,757 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:51:29,884 log Internal Server Error: /verified/
+WARNING 2026-04-18 12:51:29,903 log Not Found: /handle-browser-close/
+INFO 2026-04-18 12:51:51,109 server Killed 0 pending application instances
+INFO 2026-04-18 12:51:51,143 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:51:54,043 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:51:54,043 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:51:54,043 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:51:54,043 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:51:54,959 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:51:55,221 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:51:55,326 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:51:55,601 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:51:55,709 log Internal Server Error: /verified/
+INFO 2026-04-18 12:52:04,076 server Killed 0 pending application instances
+INFO 2026-04-18 12:52:04,111 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:52:06,952 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:52:06,953 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:52:06,953 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:52:06,954 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 12:52:07,877 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:52:08,175 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:52:08,281 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:52:08,544 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 12:52:08,706 log Not Found: /static/css/verified/styles.css
+WARNING 2026-04-18 12:52:08,722 log Not Found: /static/css/verified/ui-enhancements.css
+WARNING 2026-04-18 12:52:08,738 log Not Found: /static/js/verified/modules/utils.js
+WARNING 2026-04-18 12:52:08,751 log Not Found: /static/js/verified/modules/security.js
+WARNING 2026-04-18 12:52:08,769 log Not Found: /static/js/verified/modules/error-handler.js
+WARNING 2026-04-18 12:52:08,783 log Not Found: /static/js/verified/modules/form-validator.js
+WARNING 2026-04-18 12:52:08,796 log Not Found: /static/js/verified/modules/accessibility.js
+WARNING 2026-04-18 12:52:08,809 log Not Found: /static/js/verified/modules/loading-states.js
+WARNING 2026-04-18 12:52:08,821 log Not Found: /static/js/verified/modules/state-manager.js
+WARNING 2026-04-18 12:52:08,834 log Not Found: /static/js/verified/modules/ui-helpers.js
+WARNING 2026-04-18 12:52:08,844 log Not Found: /static/js/verified/modules/clipboard.js
+WARNING 2026-04-18 12:52:08,856 log Not Found: /static/js/verified/modules/api-service.js
+WARNING 2026-04-18 12:52:08,868 log Not Found: /static/js/verified/modules/table-manager.js
+WARNING 2026-04-18 12:52:08,880 log Not Found: /static/js/verified/modules/mail-operations.js
+WARNING 2026-04-18 12:52:08,890 log Not Found: /static/js/verified/app.js
+INFO 2026-04-18 12:54:21,272 server Killed 0 pending application instances
+INFO 2026-04-18 12:54:21,320 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 12:55:46,721 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:55:46,721 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 12:55:46,722 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 12:55:46,723 server Listening on TCP address 0.0.0.0:8001
+WARNING 2026-04-18 12:55:47,720 log Not Found: /handle-browser-close/
+INFO 2026-04-18 12:55:47,722 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 12:55:47,988 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 12:55:48,096 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:55:48,380 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 12:55:50,538 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-18 12:55:50,798 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 12:55:50,865 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-18 12:55:51,581 verified_views [verified][search_api] result_count=0 creators=21
+INFO 2026-04-18 12:55:56,765 server Killed 0 pending application instances
+INFO 2026-04-18 12:55:56,804 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 13:14:29,104 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:14:29,105 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 13:14:29,105 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:14:29,107 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 13:14:30,054 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 13:14:30,360 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 13:14:30,494 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:14:30,809 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 13:14:34,065 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-18 13:14:34,377 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:14:34,464 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-18 13:14:35,170 verified_views [verified][search_api] result_count=0 creators=21
+INFO 2026-04-18 13:41:54,480 server Killed 0 pending application instances
+INFO 2026-04-18 13:41:54,518 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 13:41:57,850 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:41:57,850 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 13:41:57,850 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:41:57,850 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 13:41:58,778 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 13:41:59,102 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 13:41:59,234 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:41:59,581 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 13:41:59,673 log Not Found: /handle-browser-close/
+ERROR 2026-04-18 13:42:01,082 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-18 13:42:01,570 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:42:01,658 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-18 13:42:02,358 verified_views [verified][search_api] result_count=0 creators=21
+INFO 2026-04-18 13:57:51,323 server Killed 0 pending application instances
+INFO 2026-04-18 13:57:51,369 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 13:57:54,143 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:57:54,143 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 13:57:54,143 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:57:54,143 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 13:57:55,060 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 13:57:55,326 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 13:57:55,410 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:57:55,727 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 13:57:55,819 log Not Found: /handle-browser-close/
+ERROR 2026-04-18 13:57:57,493 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-18 13:57:57,699 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:57:57,748 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-18 13:57:58,376 verified_views [verified][search_api] result_count=0 creators=21
+WARNING 2026-04-18 13:58:00,217 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-04-18 13:58:07,316 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:58:07,373 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-18 13:58:08,096 verified_views [verified][search_api] result_count=326 creators=21
+INFO 2026-04-18 13:58:24,347 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:58:24,623 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 13:58:24,658 log Not Found: /handle-browser-close/
+WARNING 2026-04-18 13:58:24,740 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+ERROR 2026-04-18 13:58:25,841 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-18 13:58:26,160 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:58:26,216 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-18 13:58:26,829 verified_views [verified][search_api] result_count=0 creators=21
+INFO 2026-04-18 13:58:57,498 server Killed 0 pending application instances
+INFO 2026-04-18 13:58:57,522 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 13:59:01,016 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:59:01,017 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 13:59:01,017 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:59:01,018 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 13:59:01,965 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 13:59:02,215 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 13:59:02,298 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:59:02,532 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 13:59:02,662 log Not Found: /handle-browser-close/
+WARNING 2026-04-18 13:59:02,683 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+ERROR 2026-04-18 13:59:03,520 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-18 13:59:03,883 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:59:03,933 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-18 13:59:04,628 verified_views [verified][search_api] result_count=0 creators=21
+INFO 2026-04-18 13:59:45,123 server Killed 0 pending application instances
+INFO 2026-04-18 13:59:45,153 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 13:59:47,689 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:59:47,689 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 13:59:47,689 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 13:59:47,689 server Listening on TCP address 0.0.0.0:8001
+WARNING 2026-04-18 13:59:48,647 log Not Found: /handle-browser-close/
+INFO 2026-04-18 13:59:48,647 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 13:59:48,972 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 13:59:49,105 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:59:49,432 verified_views [verified][employee_view] creators_count=21
+ERROR 2026-04-18 13:59:50,316 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-18 13:59:50,762 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 13:59:50,850 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-18 13:59:51,489 verified_views [verified][search_api] result_count=0 creators=21
+INFO 2026-04-18 14:00:14,891 server Killed 0 pending application instances
+INFO 2026-04-18 14:00:14,930 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 14:00:17,679 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 14:00:17,679 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 14:00:17,679 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 14:00:17,679 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 14:00:18,691 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 14:00:19,003 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 14:00:19,135 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 14:00:19,445 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 14:00:19,552 log Not Found: /handle-browser-close/
+ERROR 2026-04-18 14:00:20,334 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-18 14:00:20,764 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 14:00:20,851 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-18 14:00:21,510 verified_views [verified][search_api] result_count=0 creators=21
+INFO 2026-04-18 14:30:45,354 server Killed 0 pending application instances
+INFO 2026-04-18 14:30:45,390 mongodb Successfully closed MongoDB connection
+INFO 2026-04-18 14:30:48,855 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 14:30:48,856 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-18 14:30:48,857 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-18 14:30:48,857 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-18 14:30:49,727 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-18 14:30:50,009 mongodb Successfully created new MongoDB connection
+INFO 2026-04-18 14:30:50,109 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 14:30:50,442 verified_views [verified][employee_view] creators_count=21
+WARNING 2026-04-18 14:30:50,541 log Not Found: /handle-browser-close/
+INFO 2026-04-18 14:30:57,424 verified_views [verified][search_api] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-18 14:30:57,506 verified_views [verified][search_api] query={'created_at': {'$regex': '^2026-04-18'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-18 14:30:58,340 verified_views [verified][search_api] result_count=380 creators=21
+WARNING 2026-04-18 14:48:24,308 log Not Found: /handle-browser-close/

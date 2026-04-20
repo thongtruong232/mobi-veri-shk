@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}Email Manager{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ===== Base Dark Theme ===== */
+        body {
+            background-color: #0b0e18;
+            color: #e1e7f0;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Navbar */
+        .navbar {
+            background: #090c15 !important;
+            border-bottom: 1px solid rgba(74,158,255,0.1) !important;
+            box-shadow: none;
+            padding-top: .625rem;
+            padding-bottom: .625rem;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: -.3px;
+            font-size: .9375rem;
+        }
+        .navbar-text { font-size: .8125rem; color: #8b97ad !important; }
+        .badge { font-size: .65em; }
+        /* Container sizes */
+        @media (min-width: 1400px) {
+            .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+                max-width: 1800px !important;
+            }
+        }
+        .navbar .container { max-width: 1800px; margin: 0 auto; }
+        /* Page main wrapper — zero padding so inner pages control spacing */
+        #page-main { width: 100%; max-width: 100%; }
+        /* Alerts */
+        .alert { border-radius: 8px; font-size: .875rem; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            {% if user_data.role == 'admin' or user_data.role == 'general' or user_data.role == 'quanly' %}
+            <a class="navbar-brand" href="{% url 'verified' %}">
+                <i class="fas fa-envelope me-2"></i>Email Manager
+            </a>
+            {% else %}
+            <span class="navbar-brand text-muted">
+                <i class="fas fa-envelope me-2"></i>Email Manager
+            </span>
+            {% endif %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- <div class="collapse navbar-collapse" id="navbarContent">
+                <div class="navbar-nav">
+                    <span class="navbar-text me-3">
+                        <i class="fas fa-user me-1"></i>
+                        {{ user_data.username }}
+                        <span class="badge bg-info ms-1">{{ user_data.role }}</span>
+                    </span>
+                </div>
+            </div> -->
+        </div>
+    </nav>
+
+    <div id="page-main">
+        {% if messages %}
+        <div class="px-3 pt-3">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+    
+    <script>
+    // Global CSRF token handling
+    function getCSRFToken() {
+        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
+
+    // Global AJAX setup
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", getCSRFToken());
+            }
+        }
+    });
+
+    // Add CSRF token to all forms dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add CSRF token to forms
+        document.querySelectorAll('form').forEach(form => {
+            if (!form.querySelector('input[name="csrfmiddlewaretoken"]')) {
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = getCSRFToken();
+                form.appendChild(csrfInput);
+            }
+        });
+
+        // Initialize clipboard.js
+        var clipboard = new ClipboardJS('.copy-btn');
+        
+        clipboard.on('success', function(e) {
+            var icon = e.trigger.querySelector('i');
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+            
+            setTimeout(function() {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+            
+            e.clearSelection();
+        });
+        
+        clipboard.on('error', function(e) {
+            console.error('Copy failed');
+        });
+
+        // Add CSRF token to any dynamically created forms
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeName === 'FORM' && !node.querySelector('input[name="csrfmiddlewaretoken"]')) {
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = 'csrfmiddlewaretoken';
+                        csrfInput.value = getCSRFToken();
+                        node.appendChild(csrfInput);
+                    }
+                });
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+    
+    // Notify server when user leaves the page to mark is_active = false
+    (function() {
+        var sent = false;
+        function notifyBrowserClose() {
+            if (sent) return; // avoid duplicate sends
+            sent = true;
+            try {
+                var url = '/handle-browser-close/';
+                // Prefer FormData so Django can read csrfmiddlewaretoken from POST body
+                var fd = new FormData();
+                fd.append('csrfmiddlewaretoken', getCSRFToken());
+
+                // Try sendBeacon first (reliable during page unload)
+                if (navigator.sendBeacon && navigator.sendBeacon(url, fd)) {
+                    return;
+                }
+
+                // Fallback: fetch with keepalive
+                fetch(url, {
+                    method: 'POST',
+                    body: fd,
+                    keepalive: true,
+                    credentials: 'same-origin'
+                }).catch(function() {/* ignore */});
+            } catch (e) {
+                // Last resort: image GET ping (will be rejected by POST-only view, safe to ignore)
+                try {
+                    var img = new Image();
+                    img.src = '/handle-browser-close/?t=' + Date.now();
+                } catch (_) {}
+            }
+        }
+
+        // Use pagehide (fires on backgrounding and unload, better than beforeunload on mobile/Safari)
+        window.addEventListener('pagehide', notifyBrowserClose);
+        // Also notify when the document becomes hidden (tab switch/background)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') notifyBrowserClose();
+        });
+        // As a final backup
+        window.addEventListener('beforeunload', notifyBrowserClose);
+    })();
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

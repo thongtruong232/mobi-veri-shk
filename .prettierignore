@@ -1,0 +1,8 @@
+# Ignore Django template files to prevent breaking template tags
+templates/**/*.html
+*.html
+
+# Ignore other files that shouldn't be formatted
+staticfiles/
+media/
+logs/

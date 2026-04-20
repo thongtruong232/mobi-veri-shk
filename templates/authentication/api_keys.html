@@ -1,0 +1,260 @@
+{% block title %}API Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    .api-key-input {
+        font-family: monospace;
+        background-color: #f8f9fa;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        border: 1px solid #ced4da;
+    }
+    .api-key-input:focus {
+        background-color: #fff;
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .copy-btn {
+        cursor: pointer;
+        color: #0d6efd;
+    }
+    .copy-btn:hover {
+        color: #0a58ca;
+    }
+    .api-section {
+        background-color: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .api-section h3 {
+        color: #212529;
+        margin-bottom: 1rem;
+    }
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+    }
+    .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- API Đồng Văn -->
+    <div class="api-section">
+        <h3><i class="fas fa-key me-2"></i>API Dong Van</h3>
+        <form id="dongvanForm" class="mb-3">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" class="form-control api-key-input" id="dongvanKey" name="dongvan_key" 
+                       placeholder="Enter API key Dong Van" required>
+                <button type="button" class="btn btn-outline-secondary copy-btn" data-clipboard-target="#dongvanKey">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <div class="mt-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save API Key
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- API Pháp Sư -->
+    <div class="api-section">
+        <h3><i class="fas fa-key me-2"></i>API Phap Su</h3>
+        <form id="phapsuForm" class="mb-3">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" class="form-control api-key-input" id="phapsuKey" name="phapsu_key" 
+                       placeholder="Enter API key Phap Su" required>
+                <button type="button" class="btn btn-outline-secondary copy-btn" data-clipboard-target="#phapsuKey">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <div class="mt-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save API Key
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- API fMail -->
+    <div class="api-section">
+        <h3><i class="fas fa-key me-2"></i>API fMail</h3>
+        <form id="fmailForm" class="mb-3">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" class="form-control api-key-input" id="fmailKey" name="fmail_key" 
+                       placeholder="Enter API key fMail" required>
+                <button type="button" class="btn btn-outline-secondary copy-btn" data-clipboard-target="#fmailKey">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <div class="mt-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save API Key
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Xử lý copy API Key
+    var clipboard = new ClipboardJS('.copy-btn');
+    clipboard.on('success', function(e) {
+        var icon = e.trigger.querySelector('i');
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+        
+        setTimeout(function() {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+        
+        e.clearSelection();
+    });
+
+    // Hàm helper để xử lý loading state
+    function setLoadingState(formId, isLoading) {
+        const form = $(`#${formId}`);
+        const submitBtn = form.find('button[type="submit"]');
+        const originalText = submitBtn.data('original-text') || submitBtn.html();
+        
+        if (isLoading) {
+            submitBtn.data('original-text', originalText);
+            submitBtn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Đang xử lý...');
+            submitBtn.prop('disabled', true);
+        } else {
+            submitBtn.html(originalText);
+            submitBtn.prop('disabled', false);
+        }
+    }
+
+    // Xử lý form Đồng Văn
+    $('#dongvanForm').submit(function(e) {
+        e.preventDefault();
+        setLoadingState('dongvanForm', true);
+        
+        $.ajax({
+            url: '/api/save-apikey-dongvan/',
+            method: 'POST',
+            data: {
+                'type': 'dongvan',
+                'key': $('#dongvanKey').val(),
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Lưu API key Đồng Văn thành công!');
+                } else {
+                    alert('Có lỗi xảy ra: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('Có lỗi xảy ra khi lưu API key');
+            },
+            complete: function() {
+                setLoadingState('dongvanForm', false);
+            }
+        });
+    });
+
+    // Xử lý form Pháp Sư
+    $('#phapsuForm').submit(function(e) {
+        e.preventDefault();
+        setLoadingState('phapsuForm', true);
+        
+        $.ajax({
+            url: '/api/save-apikey-phapsu/',
+            method: 'POST',
+            data: {
+                'type': 'phapsu',
+                'key': $('#phapsuKey').val(),
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Lưu API key Pháp Sư thành công!');
+                } else {
+                    alert('Có lỗi xảy ra: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('Có lỗi xảy ra khi lưu API key');
+            },
+            complete: function() {
+                setLoadingState('phapsuForm', false);
+            }
+        });
+    });
+
+    // Xử lý form fMail
+    $('#fmailForm').submit(function(e) {
+        e.preventDefault();
+        setLoadingState('fmailForm', true);
+        
+        $.ajax({
+            url: '/api/save-apikey-fmail/',
+            method: 'POST',
+            data: {
+                'type': 'fmail',
+                'key': $('#fmailKey').val(),
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Lưu API key fMail thành công!');
+                } else {
+                    alert('Có lỗi xảy ra: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('Có lỗi xảy ra khi lưu API key');
+            },
+            complete: function() {
+                setLoadingState('fmailForm', false);
+            }
+        });
+    });
+
+    // Load API keys khi trang được tải
+    function loadApiKeys() {
+        setLoadingState('dongvanForm', true);
+        setLoadingState('phapsuForm', true);
+        setLoadingState('fmailForm', true);
+        
+        $.ajax({
+            url: '/api/get-apikey/',
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    $('#dongvanKey').val(response.dongvan_key || '');
+                    $('#phapsuKey').val(response.phapsu_key || '');
+                    $('#fmailKey').val(response.fmail_key || '');
+                }
+            },
+            complete: function() {
+                setLoadingState('dongvanForm', false);
+                setLoadingState('phapsuForm', false);
+                setLoadingState('fmailForm', false);
+            }
+        });
+    }
+
+    loadApiKeys();
+});
+</script>
+{% endblock %} 

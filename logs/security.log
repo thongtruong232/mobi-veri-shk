@@ -1,0 +1,11 @@
+{"timestamp": "2026-01-30 13:21:02,280", "level": "WARNING", "module": "security", "message": "Potential NoSQL injection detected: {"$gt": ""}"}
+{"timestamp": "2026-01-30 13:21:02,281", "level": "WARNING", "module": "security", "message": "Potential NoSQL injection detected: {"$where": "1==1"}"}
+{"timestamp": "2026-01-30 13:21:02,281", "level": "WARNING", "module": "security", "message": "Potential NoSQL injection detected: {"$ne": null}"}
+{"timestamp": "2026-01-30 13:21:02,282", "level": "WARNING", "module": "security", "message": "Potential NoSQL injection detected: {"$or": [{"a": 1}]}"}
+{"timestamp": "2026-01-30 13:21:02,282", "level": "WARNING", "module": "security", "message": "Potential NoSQL injection detected: {"$regex": ".*"}"}
+{"timestamp": "2026-01-30 13:21:02,292", "level": "WARNING", "module": "security", "message": "Potential XSS attack detected: <script>alert("XSS")</script>"}
+{"timestamp": "2026-01-30 13:21:02,293", "level": "WARNING", "module": "security", "message": "Potential XSS attack detected: <img src=x onerror=alert(1)>"}
+{"timestamp": "2026-01-30 13:21:02,293", "level": "WARNING", "module": "security", "message": "Potential XSS attack detected: javascript:alert(1)"}
+{"timestamp": "2026-01-30 13:21:02,294", "level": "WARNING", "module": "security", "message": "Potential XSS attack detected: <iframe src="javascript:alert(1)">"}
+{"timestamp": "2026-01-30 13:21:02,294", "level": "WARNING", "module": "security", "message": "Potential XSS attack detected: <body onload=alert(1)>"}
+{"timestamp": "2026-01-30 13:21:02,295", "level": "WARNING", "module": "security", "message": "Potential XSS attack detected: "><script>alert(1)</script>"}

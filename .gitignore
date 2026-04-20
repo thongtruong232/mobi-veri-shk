@@ -1,0 +1,11 @@
+media/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+.env
+README.md
+systemsuhuku
+.venv/

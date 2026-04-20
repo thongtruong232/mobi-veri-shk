@@ -1,0 +1,7 @@
+2026-02-27 11:59:53,649 INFO     Looking for .env file at: C:\Thong\hethong\WebDjango\.env
+2026-02-27 11:59:53,649 INFO     Found .env file at: C:\Thong\hethong\WebDjango\.env
+2026-02-27 11:59:53,651 INFO     Successfully loaded .env file
+INFO 2026-02-27 11:59:54,609 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-02-27 11:59:54,610 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-02-27 11:59:54,610 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-02-27 11:59:54,612 server Listening on TCP address 0.0.0.0:8001

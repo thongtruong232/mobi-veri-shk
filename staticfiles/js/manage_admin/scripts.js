@@ -1,0 +1,911 @@
+// Manage Admin Page - Main JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // ============================================================================
+    // VARIABLE DECLARATIONS
+    // ============================================================================
+    const dateType = document.getElementById('date_type');
+    const startDate = document.getElementById('start_date');
+    const endDate = document.getElementById('end_date');
+    const dateSeparator = document.getElementById('date_separator');
+    const csrftoken = getCookie('csrftoken') || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    const selectAllCheckbox = document.getElementById('selectAll');
+    let recordCheckboxes = document.querySelectorAll('.record-checkbox');
+    const exportButton = document.getElementById('exportSelected');
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    const searchForm = document.querySelector('form[method="GET"]');
+    const container = document.querySelector('.container-fluid');
+    let employeeIdToDelete = null;
+
+    // ============================================================================
+    // PROGRESSIVE RENDERING FOR LARGE TABLES
+    // ============================================================================
+    const ROWS_PER_BATCH = 50;  // Render 50 rows at a time
+    const SCROLL_THRESHOLD = 200;  // Pixels from bottom to trigger loading more
+    let allRows = [];
+    let renderedRowCount = 0;
+    let isRendering = false;
+    
+    function initProgressiveRendering() {
+        const tbody = document.querySelector('tbody');
+        if (!tbody) return;
+        
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        // Only enable progressive rendering for large datasets (more than 100 rows)
+        if (rows.length <= 100) return;
+        
+        // Store all rows and hide them initially
+        allRows = rows;
+        rows.forEach((row, index) => {
+            if (index >= ROWS_PER_BATCH) {
+                row.style.display = 'none';
+                row.dataset.lazyHidden = 'true';
+            }
+        });
+        renderedRowCount = Math.min(ROWS_PER_BATCH, rows.length);
+        
+        // Renumber visible rows after hiding lazy rows
+        updateRowNumbers();
+        
+        // Add scroll listener to table container
+        const tableResponsive = document.querySelector('.table-responsive');
+        if (tableResponsive) {
+            tableResponsive.addEventListener('scroll', throttle(handleTableScroll, 100));
+        }
+        
+        // Also listen on window scroll as fallback
+        window.addEventListener('scroll', throttle(handleWindowScroll, 100));
+    }
+    
+    function handleTableScroll(e) {
+        const tableContainer = e.target;
+        const scrollBottom = tableContainer.scrollHeight - tableContainer.scrollTop - tableContainer.clientHeight;
+        
+        if (scrollBottom < SCROLL_THRESHOLD && !isRendering) {
+            renderMoreRows();
+        }
+    }
+    
+    function handleWindowScroll() {
+        const scrollBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
+        
+        if (scrollBottom < SCROLL_THRESHOLD && !isRendering) {
+            renderMoreRows();
+        }
+    }
+    
+    function renderMoreRows() {
+        if (renderedRowCount >= allRows.length) return;
+        
+        isRendering = true;
+        const endIndex = Math.min(renderedRowCount + ROWS_PER_BATCH, allRows.length);
+        
+        // Use requestAnimationFrame for smoother rendering
+        requestAnimationFrame(() => {
+            for (let i = renderedRowCount; i < endIndex; i++) {
+                if (allRows[i]) {
+                    allRows[i].style.display = '';
+                    delete allRows[i].dataset.lazyHidden;
+                }
+            }
+            renderedRowCount = endIndex;
+            isRendering = false;
+            
+            // Re-bind event listeners for newly visible rows
+            rebindRowEventListeners();
+            
+            // Update row numbers after new rows become visible
+            updateRowNumbers();
+        });
+    }
+    
+    function rebindRowEventListeners() {
+        // Update recordCheckboxes reference
+        recordCheckboxes = document.querySelectorAll('.record-checkbox');
+        
+        // Re-bind delete buttons
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            if (!button.dataset.listenerBound) {
+                button.addEventListener('click', function() {
+                    employeeIdToDelete = this.getAttribute('data-id');
+                });
+                button.dataset.listenerBound = 'true';
+            }
+        });
+        
+        // Re-bind copy buttons
+        document.querySelectorAll('.btn-copy').forEach(button => {
+            if (!button.dataset.listenerBound) {
+                bindCopyButtonListener(button);
+                button.dataset.listenerBound = 'true';
+            }
+        });
+    }
+    
+    // Throttle function to limit execution frequency
+    function throttle(func, limit) {
+        let lastFunc;
+        let lastRan;
+        return function() {
+            const context = this;
+            const args = arguments;
+            if (!lastRan) {
+                func.apply(context, args);
+                lastRan = Date.now();
+            } else {
+                clearTimeout(lastFunc);
+                lastFunc = setTimeout(function() {
+                    if ((Date.now() - lastRan) >= limit) {
+                        func.apply(context, args);
+                        lastRan = Date.now();
+                    }
+                }, limit - (Date.now() - lastRan));
+            }
+        };
+    }
+    
+    // Initialize progressive rendering
+    initProgressiveRendering();
+
+    // ============================================================================
+    // UTILITY FUNCTIONS
+    // ============================================================================
+    
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Fallback for copy to clipboard
+    function fallbackCopyTextToClipboard(text, btn, effectCb) {
+        try {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            const successful = document.execCommand('copy');
+            if (successful && effectCb) {
+                effectCb(btn);
+            }
+        } catch (err) {
+            // Silently handle error
+        } finally {
+            if (textArea && textArea.parentNode) {
+                textArea.parentNode.removeChild(textArea);
+            }
+        }
+    }
+
+    // Update row numbers after sorting or deletion
+    function updateRowNumbers() {
+        const tbody = document.querySelector('tbody');
+        const pageStart = tbody ? parseInt(tbody.dataset.pageStart || '0', 10) : 0;
+        const rows = document.querySelectorAll('tbody tr');
+        let visibleIndex = 0;
+        rows.forEach((row) => {
+            // Skip rows that are hidden by progressive rendering or display:none
+            if (row.style.display === 'none' || row.dataset.lazyHidden === 'true') return;
+            const sttCell = row.querySelector('td:nth-child(2)');
+            if (sttCell) {
+                sttCell.textContent = pageStart + (++visibleIndex);
+            }
+        });
+    }
+
+    // ============================================================================
+    // DATE HANDLING
+    // ============================================================================
+    
+    // Handle date type change (single vs range)
+    function handleDateTypeChange() {
+        if (dateType.value === 'single') {
+            endDate.style.display = 'none';
+            dateSeparator.style.display = 'none';
+            endDate.value = startDate.value;
+        } else {
+            endDate.style.display = 'block';
+            dateSeparator.style.display = 'block';
+        }
+    }
+
+    // Set initial date values
+    if (!startDate.value) {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        startDate.value = formattedDate;
+        endDate.value = formattedDate;
+    }
+    
+    if (!dateType.value) {
+        dateType.value = 'single';
+    }
+    
+    handleDateTypeChange();
+
+    // Initialize datepicker
+    const dateInputs = document.querySelectorAll('input[type="date"]');
+    dateInputs.forEach(input => {
+        input.type = 'text';
+        $(input).datepicker({
+            format: 'yyyy-mm-dd',
+            language: 'vi',
+            autoclose: true,
+            todayHighlight: true,
+            clearBtn: true,
+            orientation: 'bottom auto',
+            templates: {
+                leftArrow: '<i class="fas fa-chevron-left"></i>',
+                rightArrow: '<i class="fas fa-chevron-right"></i>'
+            }
+        });
+
+        $(input).on('changeDate', function(e) {
+            if (dateType.value === 'single') {
+                endDate.value = e.date.toISOString().split('T')[0];
+            }
+        });
+    });
+
+    // Event listeners for date changes
+    startDate.addEventListener('change', function() {
+        if (dateType.value === 'single') {
+            endDate.value = this.value;
+        } else {
+            endDate.min = this.value;
+            if (endDate.value && endDate.value < this.value) {
+                endDate.value = this.value;
+            }
+        }
+    });
+
+    dateType.addEventListener('change', handleDateTypeChange);
+
+    // Update date range info display
+    function updateDateRangeInfo() {
+        const dateTypeVal = document.getElementById('date_type').value;
+        const startDateVal = document.getElementById('start_date').value;
+        const endDateVal = document.getElementById('end_date').value;
+        
+        function formatDate(date) {
+            return date.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        let dateRangeText;
+        if (dateTypeVal === 'single' && startDateVal) {
+            const date = new Date(startDateVal);
+            dateRangeText = `Day: ${formatDate(date)}`;
+        } else if (dateTypeVal === 'range' && startDateVal && endDateVal) {
+            const start = new Date(startDateVal);
+            const end = new Date(endDateVal);
+            dateRangeText = `From ${formatDate(start)} to ${formatDate(end)}`;
+        } else {
+            dateRangeText = 'All time';
+        }
+
+        const dateRangeElements = ['dateRangeInfoTN', 'dateRangeInfoTF', 'dateRangeInfoTNUnsold', 'dateRangeInfoTFUnsold'];
+        dateRangeElements.forEach(elementId => {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = dateRangeText;
+            }
+        });
+    }
+
+    updateDateRangeInfo();
+    document.getElementById('date_type').addEventListener('change', updateDateRangeInfo);
+    document.getElementById('start_date').addEventListener('change', updateDateRangeInfo);
+    document.getElementById('end_date').addEventListener('change', updateDateRangeInfo);
+
+    // ============================================================================
+    // TABLE SORTING & FILTERING
+    // ============================================================================
+    
+    // Sort email list
+    function sortEmailList() {
+        const tbody = document.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        if (rows.length === 1 && rows[0].querySelector('td').colSpan > 1) {
+            return;
+        }
+
+        rows.sort((a, b) => {
+            const aTNSold = a.getAttribute('data-sold-tn') === 'true';
+            const bTNSold = b.getAttribute('data-sold-tn') === 'true';
+            const aTFSold = a.getAttribute('data-sold-tf') === 'true';
+            const bTFSold = b.getAttribute('data-sold-tf') === 'true';
+            const aTNStatus = a.getAttribute('data-status-tn') || '';
+            const bTNStatus = b.getAttribute('data-status-tn') || '';
+            const aTFStatus = a.getAttribute('data-status-tf') || '';
+            const bTFStatus = b.getAttribute('data-status-tf') || '';
+            const aDateStr = a.querySelector('td:nth-child(10)')?.textContent?.trim() || '';
+            const bDateStr = b.querySelector('td:nth-child(10)')?.textContent?.trim() || '';
+            
+            let aDate = new Date(0);
+            let bDate = new Date(0);
+            
+            if (aDateStr) {
+                const [day, month, year] = aDateStr.split('/');
+                aDate = new Date(year, month - 1, day);
+            }
+            
+            if (bDateStr) {
+                const [day, month, year] = bDateStr.split('/');
+                bDate = new Date(year, month - 1, day);
+            }
+
+            const aUnsold = !aTNSold || !aTFSold;
+            const bUnsold = !bTNSold || !bTFSold;
+            if (aUnsold !== bUnsold) {
+                return aUnsold ? -1 : 1;
+            }
+
+            const aRegOk = aTNStatus === 'success' || aTFStatus === 'success';
+            const bRegOk = bTNStatus === 'success' || bTFStatus === 'success';
+            if (aRegOk !== bRegOk) {
+                return aRegOk ? -1 : 1;
+            }
+
+            return bDate - aDate;
+        });
+
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+
+        rows.forEach(row => tbody.appendChild(row));
+
+        // Sync allRows array with new DOM order (for progressive rendering)
+        if (allRows.length > 0) {
+            allRows = rows;
+        }
+
+        updateRowNumbers();
+    }
+
+    // Check and sort when data is ready
+    function checkAndSort() {
+        const tbody = document.querySelector('tbody');
+        if (tbody && tbody.children.length > 0) {
+            sortEmailList();
+        } else {
+            setTimeout(checkAndSort, 500);
+        }
+    }
+
+    checkAndSort();
+
+    // Sort table by column
+    function sortTable(columnIndex, type = 'string') {
+        const tbody = document.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        if (rows.length === 1 && rows[0].querySelector('td').colSpan > 1) {
+            return;
+        }
+
+        const header = document.querySelector(`th:nth-child(${columnIndex + 1})`);
+        const currentDirection = header.classList.contains('asc') ? 'desc' : 'asc';
+
+        document.querySelectorAll('th').forEach(th => {
+            th.classList.remove('asc', 'desc');
+        });
+
+        header.classList.add(currentDirection);
+
+        rows.sort((a, b) => {
+            let aValue = a.querySelector(`td:nth-child(${columnIndex + 1})`).textContent.trim();
+            let bValue = b.querySelector(`td:nth-child(${columnIndex + 1})`).textContent.trim();
+
+            if (aValue.includes('badge')) {
+                aValue = a.querySelector(`td:nth-child(${columnIndex + 1}) .badge`).textContent.trim();
+                bValue = b.querySelector(`td:nth-child(${columnIndex + 1}) .badge`).textContent.trim();
+            }
+
+            if (type === 'date') {
+                aValue = new Date(aValue.split('/').reverse().join('-'));
+                bValue = new Date(bValue.split('/').reverse().join('-'));
+            }
+
+            if (currentDirection === 'asc') {
+                return aValue > bValue ? 1 : -1;
+            } else {
+                return aValue < bValue ? 1 : -1;
+            }
+        });
+
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+
+        rows.forEach(row => tbody.appendChild(row));
+
+        // Sync allRows array with new DOM order (for progressive rendering)
+        if (allRows.length > 0) {
+            allRows = rows;
+        }
+
+        updateRowNumbers();
+    }
+
+    // Add click event for sortable headers
+    document.querySelectorAll('th').forEach((header, index) => {
+        if (index === 0) return;
+
+        header.classList.add('sortable');
+        header.addEventListener('click', () => {
+            let type = 'string';
+            if (index === 10) {
+                type = 'date';
+            }
+            sortTable(index, type);
+        });
+    });
+
+    // ============================================================================
+    // STATISTICS & COUNTS
+    // ============================================================================
+
+    // Fetch sold status counts from server
+    function fetchSoldStatusCounts() {
+        if (document.querySelector('form[method="GET"]').dataset.submitted === 'true') {
+            fetch('/api/get-sold-status-counts/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('totalTNSoldStatus').textContent = data.counts.tn_sold;
+                        document.getElementById('totalTFSoldStatus').textContent = data.counts.tf_sold;
+                        document.getElementById('totalTNUnsoldStatus').textContent = data.counts.tn_unsold;
+                        document.getElementById('totalTFUnsoldStatus').textContent = data.counts.tf_unsold;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+
+    // ============================================================================
+    // COPY FUNCTIONALITY
+    // ============================================================================
+    
+    // Helper function to bind copy button listener (used for progressive rendering)
+    function bindCopyButtonListener(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const text = this.getAttribute('data-info');
+            if (!text) {
+                console.warn('No data-info attribute found on copy button');
+                return;
+            }
+
+            const showCopyEffect = (btn) => {
+                btn.classList.add('copied-effect');
+                setTimeout(() => {
+                    btn.classList.remove('copied-effect');
+                }, 500);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        showCopyEffect(this);
+                    })
+                    .catch(() => {
+                        fallbackCopyTextToClipboard(text, this, showCopyEffect);
+                    });
+            } else {
+                fallbackCopyTextToClipboard(text, this, showCopyEffect);
+            }
+        });
+    }
+    
+    // Copy button handlers
+    document.querySelectorAll('.btn-copy').forEach(button => {
+        bindCopyButtonListener(button);
+        button.dataset.listenerBound = 'true';
+    });
+
+    // ============================================================================
+    // DELETE FUNCTIONALITY
+    // ============================================================================
+    
+    // Store employee ID to delete
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function() {
+            employeeIdToDelete = this.getAttribute('data-id');
+        });
+        button.dataset.listenerBound = 'true';
+    });
+    
+    // Confirm delete handler
+    const confirmDeleteBtn = document.getElementById('confirmDelete');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function() {
+            if (!employeeIdToDelete) return;
+            
+            fetch('/delete-employee/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken
+                },
+                body: `employee_id=${employeeIdToDelete}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error when deleting: ' + error);
+            });
+        });
+    }
+
+    // ============================================================================
+    // EXCEL EXPORT
+    // ============================================================================
+    
+    // Select all checkbox handler
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function () {
+            recordCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+
+    // Export button handler
+    if (exportButton) {
+        exportButton.addEventListener('click', function () {
+            const itemTypeSelect = document.getElementById('itemTypeSelect');
+            const type = itemTypeSelect ? itemTypeSelect.value : 'all';
+            const dateTypeInput = document.getElementById('date_type');
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+            const dateTypeVal = dateTypeInput ? dateTypeInput.value : 'single';
+            const startDateVal = startDateInput ? startDateInput.value : '';
+            const endDateVal = endDateInput ? endDateInput.value : '';
+            const selectedIds = Array.from(recordCheckboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            if (selectedIds.length === 0) {
+                alert('Please select at least one record to export Excel.');
+                return;
+            }
+
+            this.classList.add('loading');
+
+            fetch('/api/export-employee-excel-sale/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    selected_ids: selectedIds,
+                    itemTypeSelect: type,
+                    dateType: dateTypeVal,
+                    startDate: startDateVal,
+                    endDate: endDateVal
+                })
+            })
+            .then(response => {
+                const contentType = response.headers.get('content-type');
+                if (response.ok && contentType && contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+                    return response.blob().then(blob => ({ blob, isExcel: true }));
+                } else {
+                    return response.json().then(data => ({ error: data.message || 'Error when exporting Excel.', isExcel: false }));
+                }
+            })
+            .then(result => {
+                if (result.isExcel) {
+                    const url = window.URL.createObjectURL(result.blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const count = selectedIds.length;
+                    let dateStr = '';
+                    if (dateTypeVal === 'single' && startDateVal) {
+                        const [y, m, d] = startDateVal.split('-');
+                        dateStr = `${d}_${m}_${y}`;
+                    } else if (dateTypeVal === 'range' && startDateVal && endDateVal) {
+                        const [y1, m1, d1] = startDateVal.split('-');
+                        const [y2, m2, d2] = endDateVal.split('-');
+                        dateStr = `${d1}_${m1}_${y1}_to_${d2}_${m2}_${y2}`;
+                    } else {
+                        const now = new Date();
+                        dateStr = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth()+1).toString().padStart(2, '0')}_${now.getFullYear()}`;
+                    }
+                    const filename = `${count}_${type}_${dateStr}.xlsx`;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    alert(result.error);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('An error occurred when exporting Excel.');
+            })
+            .finally(() => {
+                this.classList.remove('loading');
+            });
+        });
+    }
+
+    // Export All Filtered handler — use event delegation to handle clicks on child elements
+    document.addEventListener('click', function(e) {
+        const exportAllBtn = e.target.closest('#exportAllFiltered');
+        if (!exportAllBtn) return;
+
+        console.log('Clicked button Export All');
+
+        const getVal = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+        const payload = {
+            itemTypeSelect:    getVal('itemTypeSelect'),
+            date_type:         getVal('date_type'),
+            start_date:        getVal('start_date'),
+            end_date:          getVal('end_date'),
+            status_account_TN: getVal('status_account_TN'),
+            status_account_TF: getVal('status_account_TF'),
+            sold_status_tn:    getVal('sold_status_tn'),
+            sold_status_tf:    getVal('sold_status_tf'),
+            created_by:        getVal('created_by'),
+            office:            getVal('office'),
+            search:            getVal('search'),
+        };
+
+        exportAllBtn.classList.add('loading');
+
+        fetch('/api/export-all-filtered/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            const ct = response.headers.get('content-type');
+            if (response.ok && ct && ct.includes('spreadsheetml')) {
+                return response.blob().then(blob => ({ blob, isExcel: true }));
+            }
+            return response.json().then(data => ({ error: data.message || 'Export failed.', isExcel: false }));
+        })
+        .then(result => {
+            if (result.isExcel) {
+                const url = window.URL.createObjectURL(result.blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const dateTypeVal  = payload.date_type;
+                const startDateVal = payload.start_date;
+                const endDateVal   = payload.end_date;
+                let dateStr = '';
+                if (dateTypeVal === 'single' && startDateVal) {
+                    const [y, m, d] = startDateVal.split('-');
+                    dateStr = `${d}_${m}_${y}`;
+                } else if (dateTypeVal === 'range' && startDateVal && endDateVal) {
+                    const [y1, m1, d1] = startDateVal.split('-');
+                    const [y2, m2, d2] = endDateVal.split('-');
+                    dateStr = `${d1}_${m1}_${y1}_to_${d2}_${m2}_${y2}`;
+                } else {
+                    const now = new Date();
+                    dateStr = `${now.getDate().toString().padStart(2,'0')}_${(now.getMonth()+1).toString().padStart(2,'0')}_${now.getFullYear()}`;
+                }
+                a.download = `all_${payload.itemTypeSelect}_${dateStr}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } else {
+                alert(result.error || 'Export failed.');
+            }
+        })
+        .catch(err => {
+            console.error('Export All error:', err);
+            alert('An error occurred when exporting Excel.');
+        })
+        .finally(() => exportAllBtn.classList.remove('loading'));
+    });
+
+    // ============================================================================
+    // LOADING OVERLAY
+    // ============================================================================
+    
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            if (loadingOverlay) loadingOverlay.style.display = 'flex';
+            if (container) container.classList.add('loading');
+        });
+    }
+
+    document.querySelectorAll('.form-control, .form-select').forEach(element => {
+        element.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (loadingOverlay) loadingOverlay.style.display = 'flex';
+                if (container) container.classList.add('loading');
+            }
+        });
+    });
+
+    // ============================================================================
+    // TYPE SELECTION HANDLERS
+    // ============================================================================
+    
+    const selectTypeGroup = document.getElementById('selectTypeGroup');
+    const itemTypeSelect = document.getElementById('itemTypeSelect');
+    const tnStatusGroup = document.getElementById('tnStatusGroup');
+    const tfStatusGroup = document.getElementById('tfStatusGroup');
+    const changeTypeBtnTN = document.getElementById('changeTypeBtnTN');
+    const changeTypeBtnTF = document.getElementById('changeTypeBtnTF');
+
+    function showType(type) {
+        if (type === 'textnow') {
+            if (selectTypeGroup) selectTypeGroup.style.display = 'none';
+            if (tnStatusGroup) tnStatusGroup.style.display = 'block';
+            if (tfStatusGroup) tfStatusGroup.style.display = 'none';
+            localStorage.setItem('searchModalType', 'textnow');
+        } else if (type === 'textfree') {
+            if (selectTypeGroup) selectTypeGroup.style.display = 'none';
+            if (tnStatusGroup) tnStatusGroup.style.display = 'none';
+            if (tfStatusGroup) tfStatusGroup.style.display = 'block';
+            localStorage.setItem('searchModalType', 'textfree');
+        } else {
+            if (selectTypeGroup) selectTypeGroup.style.display = 'block';
+            if (tnStatusGroup) tnStatusGroup.style.display = 'none';
+            if (tfStatusGroup) tfStatusGroup.style.display = 'none';
+            localStorage.setItem('searchModalType', 'all');
+        }
+    }
+
+    if (itemTypeSelect) {
+        itemTypeSelect.addEventListener('change', function() {
+            showType(this.value);
+        });
+    }
+
+    if (changeTypeBtnTN) {
+        changeTypeBtnTN.addEventListener('click', function() {
+            const itemTypeSelectEl = document.getElementById('itemTypeSelect');
+            const statusAccountTN = document.getElementById('status_account_TN');
+            const soldStatusTn = document.getElementById('sold_status_tn');
+            const statusAccountTF = document.getElementById('status_account_TF');
+            const soldStatusTf = document.getElementById('sold_status_tf');
+            const searchEl = document.getElementById('search');
+            
+            if (itemTypeSelectEl) itemTypeSelectEl.value = 'all';
+            if (statusAccountTN) statusAccountTN.value = '';
+            if (soldStatusTn) soldStatusTn.value = '';
+            if (statusAccountTF) statusAccountTF.value = '';
+            if (soldStatusTf) soldStatusTf.value = '';
+            if (searchEl) searchEl.value = '';
+            
+            showType('all');
+        });
+    }
+    
+    if (changeTypeBtnTF) {
+        changeTypeBtnTF.addEventListener('click', function() {
+            const itemTypeSelectEl = document.getElementById('itemTypeSelect');
+            const statusAccountTN = document.getElementById('status_account_TN');
+            const soldStatusTn = document.getElementById('sold_status_tn');
+            const statusAccountTF = document.getElementById('status_account_TF');
+            const soldStatusTf = document.getElementById('sold_status_tf');
+            const searchEl = document.getElementById('search');
+            
+            if (itemTypeSelectEl) itemTypeSelectEl.value = 'all';
+            if (statusAccountTN) statusAccountTN.value = '';
+            if (soldStatusTn) soldStatusTn.value = '';
+            if (statusAccountTF) statusAccountTF.value = '';
+            if (soldStatusTf) soldStatusTf.value = '';
+            if (searchEl) searchEl.value = '';
+            
+            showType('all');
+        });
+    }
+
+    const savedModalType = localStorage.getItem('searchModalType');
+    if (savedModalType && itemTypeSelect) {
+        itemTypeSelect.value = savedModalType;
+        showType(savedModalType);
+    } else if (itemTypeSelect) {
+        showType(itemTypeSelect.value);
+    }
+
+    // ============================================================================
+    // OFFICE & CREATOR SYNC
+    // ============================================================================
+    
+    const officeSelect = document.getElementById('office');
+    const creatorSelect = document.getElementById('created_by');
+
+    function updateCreatorOptionsByOffice(selectedOffice, preserveCurrentValue = true) {
+        if (!creatorSelect) return;
+        const currentValue = preserveCurrentValue ? creatorSelect.value : '';
+        fetch(`/get-creators-by-office/?office=${encodeURIComponent(selectedOffice || '')}`)
+            .then(response => response.json())
+            .then(data => {
+                creatorSelect.innerHTML = '<option value="">All</option>';
+                data.creators.forEach(function(creator) {
+                    const option = document.createElement('option');
+                    option.value = creator;
+                    option.textContent = creator;
+                    creatorSelect.appendChild(option);
+                });
+                if (preserveCurrentValue && currentValue) {
+                    const hasOption = Array.from(creatorSelect.options).some(opt => opt.value === currentValue);
+                    if (hasOption) {
+                        creatorSelect.value = currentValue;
+                    }
+                }
+            })
+            .catch(() => {
+                // Silent error handling
+            });
+    }
+
+    if (officeSelect) {
+        officeSelect.addEventListener('change', function() {
+            updateCreatorOptionsByOffice(this.value, false);
+        });
+        updateCreatorOptionsByOffice(officeSelect.value, true);
+    }
+
+    // ============================================================================
+    // BOOTSTRAP COMPONENTS INITIALIZATION
+    // ============================================================================
+    
+    // Initialize popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Initialize badge tooltips
+    var badgeTooltips = [].slice.call(document.querySelectorAll('#totalTNSold, #totalTNSoldStatus, #totalTFSold, #totalTFSoldStatus, #totalTNUnsold, #totalTNUnsoldStatus, #totalTFUnsold, #totalTFUnsoldStatus'));
+    badgeTooltips.forEach(function (el) {
+        if (el) {
+            new bootstrap.Tooltip(el);
+        }
+    });
+
+    // ============================================================================
+    // FORM SUBMISSION HANDLING
+    // ============================================================================
+    
+    document.querySelector('form[method="GET"]').addEventListener('submit', function() {
+        this.dataset.submitted = 'true';
+        setTimeout(checkAndSort, 1000);
+    });
+
+    fetchSoldStatusCounts();
+});

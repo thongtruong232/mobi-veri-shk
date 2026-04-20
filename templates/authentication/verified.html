@@ -1,0 +1,229 @@
+<!-- =========================================
+PROJECT CLEANUP
+
+This project was refactored to:
+- Keep ONLY verified.html
+- Remove all auth/login logic
+- Remove unused pages and APIs
+
+Goal:
+- Minimal, clean, single-purpose project
+========================================= -->
+
+{% extends 'authentication/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<!-- Resource Hints -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="dns-prefetch" href="https://api.dongvanfb.net">
+<!-- Verified page CSS -->
+<link rel="preload" href="{% static 'css/verified/styles.css' %}" as="style">
+<link rel="preload" href="{% static 'css/verified/ui-enhancements.css' %}" as="style">
+<link rel="stylesheet" href="{% static 'css/verified/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/verified/ui-enhancements.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- <a href="#verifiedTableBody" class="skip-link">Skip to main content</a> -->
+{{ textnow_accounts|json_script:"textnow-accounts-data" }}
+<!-- Thêm HTML cho popup thông báo -->
+<div id="notificationPopup" class="notification-popup" style="display: none;">
+    <div class="notification-content">
+        <div class="notification-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="notification-message"></div>
+    </div>
+</div>
+<div class="container-fluid py-1 ">
+    <!-- Page Header -->
+    <div class="sticky-header" style="width: 100%;">
+        <div class="row gx-0 mb-0 px-3 py-3 bg-white border-bottom">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="mx-3">
+                        <h2 class="mb-1 text-dark">TextNow Verified List</h4>
+                        <p class="text-muted mb-0">Work page for verified staff</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="btnCopyAll" class="btn btn-info" style="display: none;">
+                            <i class="fas fa-copy me-1"></i> Copy All
+                        </button>
+                        <button id="btnVerifiedSuccess" class="btn btn-success" style="display: none;">
+                            <i class="fas fa-check-circle me-1"></i> Verified
+                        </button>
+                        <button id="btnVerifiedError" class="btn btn-danger" style="display: none;">
+                            <i class="fas fa-times-circle me-1"></i> Error
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Form Card -->
+    <div class="card shadow-sm mb-4 mx-3">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label text-muted fw-bold">Date:</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                            <input type="date" id="searchDate" class="form-control" value="{{ search_date }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label text-muted fw-bold" id="statusLabel" style="cursor: pointer;">TextNow Status: (click to switch)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="fas fa-filter"></i>
+                            </span>
+                            <select id="statusTN" class="form-select">
+                                <option value="">All</option>
+                                <option value="success">Success</option>
+                                <option value="verified">Verified</option>
+                                <option value="error">Error</option>
+                                <option value="resend link">Resend link</option>
+                                <option value="other password">Other password</option>
+                                <option value="not reg">Not reg</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label text-muted fw-bold">Created by:</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <select id="createdBy" class="form-select">
+                                <option value="">All</option>
+                                {% for creator in creators %}
+                                    <option value="{{ creator }}" {% if creator == created_by %}selected{% endif %}>{{ creator }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary w-100" id="searchButton" onclick="searchRecords()">
+                        <span class="d-flex align-items-center justify-content-center">
+                            <span class="search-text">
+                                <i class="fas fa-search me-1"></i> Search
+                            </span>
+                            <span class="search-loading d-none">
+                                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                Searching...
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Card -->
+    <div class="card shadow-sm mx-3" role="region" aria-label="Search results">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <h6 class="mb-0 text-dark" id="resultsHeading">Search results</h6>
+                    <!-- <span class="badge bg-primary ms-2" id="totalRecords">{{ total_records }}</span> -->
+                </div>
+
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive" role="region" aria-labelledby="resultsHeading" tabindex="0">
+                <table class="table table-hover mb-0" role="grid" aria-label="Verified records">
+                    <thead class="sticky-table-header">
+                        <tr role="row">
+                            <th class="bg-light ps-4" scope="col">
+                                <div class="form-check">
+                                    <input type="checkbox" id="selectAll" class="form-check-input" aria-label="Select all records">
+                                </div>
+                            </th>
+                            <th class="bg-light" scope="col">No.</th>
+                            <th class="bg-light" scope="col">Email</th>
+                            <th class="bg-light" scope="col">Password</th>
+                            <th class="bg-light" scope="col">TextNow Status</th>
+                            <th class="bg-light" scope="col">TextFree Status</th>
+                            <th class="bg-light" scope="col">Created Date</th>
+                            <th class="bg-light" scope="col">Created by</th>
+                            <th class="bg-light pe-4" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="verifiedTableBody" aria-live="polite" aria-busy="false">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>
+                    Edit status
+                </h5>
+                <button type="button" class="btn-close" onclick="closeEditModal()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label text-muted">Email:</label>
+                    <div id="editEmail" class="form-control-plaintext"></div>
+                </div>
+                <div class="mb-3">
+                    <label id="editStatusLabel" class="form-label text-muted" style="cursor: pointer;">TextNow Status: (click to switch)</label>
+                    <select id="editStatus" class="form-select"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" onclick="closeEditModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveEdit()">
+                    <i class="fas fa-save me-1"></i>
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Thêm div cho loading -->
+<div class="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<!-- Bootstrap JS already loaded by base.html -->
+<!-- Font Awesome CSS already loaded by base.html -->
+
+<!-- Optimized Modular JavaScript (Phase 2 + Phase 4 + Phase 5 + Phase 6) -->
+<!-- Core Modules - Load in order of dependencies -->
+<script src="{% static 'js/verified/modules/utils.js' %}"></script>
+<script src="{% static 'js/verified/modules/security.js' %}"></script>
+<script src="{% static 'js/verified/modules/error-handler.js' %}"></script>
+<script src="{% static 'js/verified/modules/form-validator.js' %}"></script>
+<script src="{% static 'js/verified/modules/accessibility.js' %}"></script>
+<script src="{% static 'js/verified/modules/loading-states.js' %}"></script>
+<script src="{% static 'js/verified/modules/state-manager.js' %}"></script>
+<script src="{% static 'js/verified/modules/ui-helpers.js' %}"></script>
+<script src="{% static 'js/verified/modules/clipboard.js' %}"></script>
+<script src="{% static 'js/verified/modules/api-service.js' %}"></script>
+<script src="{% static 'js/verified/modules/table-manager.js' %}"></script>
+<!-- Main Application Script -->
+<script src="{% static 'js/verified/app.js' %}"></script>
+{% endblock %}
