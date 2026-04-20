@@ -412,15 +412,14 @@ async function searchRecords() {
   const searchText = searchButton?.querySelector(".search-text");
   const searchLoading = searchButton?.querySelector(".search-loading");
 
-  const selectedCreator = document.getElementById("createdBy")?.value || "";
   const selectedStatus = document.getElementById("statusTN")?.value || "";
-  const selectedOffice = document.getElementById("offices")?.value || "";
+  const employeeSearch =
+    document.getElementById("searchEmployee")?.value.trim() || "";
 
   // Update filters in state
   StateManager.actions.setFilters({
-    office: selectedOffice,
     status: selectedStatus,
-    createdBy: selectedCreator,
+    employee: employeeSearch,
   });
 
   // Show loading state
@@ -432,8 +431,7 @@ async function searchRecords() {
   try {
     const isTextNowStatus = StateManager.getState("isTextNowStatus");
     const params = {};
-    if (selectedOffice) params.office = selectedOffice;
-    if (selectedCreator) params.created_by = selectedCreator;
+    if (employeeSearch) params.employee = employeeSearch;
 
     if (selectedStatus) {
       if (isTextNowStatus) {
@@ -449,10 +447,6 @@ async function searchRecords() {
       // Update records in state
       StateManager.actions.setRecords(data.data);
       TableManager.displayRecords(data.data);
-
-      if (data.creators) {
-        TableManager.updateCreatedByDropdown(data.creators, selectedCreator);
-      }
 
       // Restore filter values
       const statusSelect = document.getElementById("statusTN");
@@ -658,21 +652,90 @@ async function loadInitialData() {
 }
 
 /**
- * Load creators dropdown based on selected office
- * @param {string} office - Office name, or '' for all
+ * Setup employee name autocomplete for #searchEmployee
  */
-async function loadCreatorsByOffice(office = "") {
-  try {
-    const data = await ApiService.getCreatorsByOffice(office);
-    if (data.success) {
-      TableManager.updateCreatedByDropdown(data.creators, "");
+function setupEmployeeAutocomplete() {
+  const input = document.getElementById("searchEmployee");
+  const dropdown = document.getElementById("employeeSuggestions");
+  if (!input || !dropdown) return;
+
+  let activeIndex = -1;
+
+  const debouncedFetch = Utils.debounce(async (query) => {
+    if (!query) {
+      dropdown.style.display = "none";
+      return;
     }
-  } catch (error) {
-    console.warn(
-      "[App] Error loading creators by office:",
-      error.message || error,
-    );
-  }
+    try {
+      const data = await ApiService.suggestEmployees(query);
+      if (data.success && data.suggestions && data.suggestions.length > 0) {
+        dropdown.innerHTML = data.suggestions
+          .map(
+            (s) =>
+              `<div class="autocomplete-item" data-value="${s}">${s}</div>`,
+          )
+          .join("");
+        activeIndex = -1;
+        dropdown.style.display = "block";
+
+        dropdown.querySelectorAll(".autocomplete-item").forEach((item) => {
+          item.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            input.value = item.dataset.value;
+            dropdown.style.display = "none";
+            searchRecords();
+          });
+        });
+      } else {
+        dropdown.innerHTML =
+          '<div class="autocomplete-no-results">No results found</div>';
+        dropdown.style.display = "block";
+      }
+    } catch {
+      dropdown.style.display = "none";
+    }
+  }, 200);
+
+  input.addEventListener("input", () => {
+    activeIndex = -1;
+    debouncedFetch(input.value.trim());
+  });
+
+  input.addEventListener("keydown", (e) => {
+    const items = dropdown.querySelectorAll(".autocomplete-item");
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeIndex = Math.min(activeIndex + 1, items.length - 1);
+      items.forEach((item, i) =>
+        item.classList.toggle("active", i === activeIndex),
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      activeIndex = Math.max(activeIndex - 1, -1);
+      items.forEach((item, i) =>
+        item.classList.toggle("active", i === activeIndex),
+      );
+    } else if (e.key === "Enter" && activeIndex >= 0) {
+      e.preventDefault();
+      input.value = items[activeIndex].dataset.value;
+      dropdown.style.display = "none";
+      searchRecords();
+    } else if (e.key === "Escape") {
+      dropdown.style.display = "none";
+    }
+  });
+
+  input.addEventListener("blur", () => {
+    setTimeout(() => {
+      dropdown.style.display = "none";
+    }, 150);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.style.display = "none";
+    }
+  });
 }
 
 /**
@@ -684,22 +747,18 @@ function setupEventListeners() {
   const debouncedSearch = Utils.debounce(searchRecords, 500);
 
   // Auto-search when filters change
-  const officesSelect = document.getElementById("offices");
   const statusTN = document.getElementById("statusTN");
-  const createdBy = document.getElementById("createdBy");
+  const searchEmployee = document.getElementById("searchEmployee");
 
-  if (officesSelect) {
-    officesSelect.addEventListener("change", async () => {
-      await loadCreatorsByOffice(officesSelect.value);
-      debouncedSearch();
-    });
-  }
   if (statusTN) {
     statusTN.addEventListener("change", debouncedSearch);
   }
-  if (createdBy) {
-    createdBy.addEventListener("change", debouncedSearch);
+  if (searchEmployee) {
+    searchEmployee.addEventListener("input", debouncedSearch);
   }
+
+  // Employee name autocomplete
+  setupEmployeeAutocomplete();
 
   // Status label click
   const statusLabel = document.getElementById("statusLabel");

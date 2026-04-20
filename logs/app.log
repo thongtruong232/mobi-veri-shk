@@ -385,3 +385,114 @@ INFO 2026-04-20 16:53:27,771 verified_views [verified][search_api] office_param=
 INFO 2026-04-20 16:53:30,654 verified_views [verified][search_api] result_count=1054 creators=11
 INFO 2026-04-20 16:53:44,294 server Killed 0 pending application instances
 INFO 2026-04-20 16:53:44,324 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 16:59:17,844 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 16:59:17,845 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 16:59:17,845 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 16:59:17,846 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 16:59:20,977 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 16:59:21,307 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 16:59:21,391 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 16:59:22,152 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-04-20 16:59:33,343 verified_views [verified][search_api] office_param='' offices=['Hàn Mạc Tử', 'Trung Tiến', 'Bùi Việt'] query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 16:59:35,793 verified_views [verified][search_api] result_count=1055 creators=11
+WARNING 2026-04-20 17:00:30,795 log Not Found: /handle-browser-close/
+INFO 2026-04-20 17:06:01,527 reg_views [TN][REQ] start email=shontzfenstermaker485@hotmail.com client_id=9e5f94...
+WARNING 2026-04-20 17:06:03,917 connectionpool Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F03F647970>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')': /api/mail/read
+WARNING 2026-04-20 17:06:08,092 connectionpool Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F03F6477C0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')': /api/mail/read
+ERROR 2026-04-20 17:06:10,269 reg_views [IMAP][ERR] HTTPConnectionPool(host='45.77.35.79', port=5000): Max retries exceeded with url: /api/mail/read (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F03F647580>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+INFO 2026-04-20 17:06:10,270 ReadMailBox Requesting access token for shontzfenstermaker485@hotmail.com
+INFO 2026-04-20 17:06:10,920 ReadMailBox Successfully obtained access token for shontzfenstermaker485@hotmail.com
+INFO 2026-04-20 17:06:11,807 reg_views [TN][GRAPH][PARSE] items=2
+INFO 2026-04-20 17:06:11,808 reg_views [TN][GRAPH][DONE] email=shontzfenstermaker485@hotmail.com hits=0
+INFO 2026-04-20 17:06:11,809 async_email_processor Email reading completed for shontzfenstermaker485@hotmail.com in 10.08s
+INFO 2026-04-20 17:06:11,810 reg_views [TN][RES] email=shontzfenstermaker485@hotmail.com results_count=0 error=None
+INFO 2026-04-20 17:06:11,811 reg_views [TN][RES] results={'results': [], 'error': None}
+INFO 2026-04-20 17:06:13,356 reg_views [TN][REQ] start email=conelydearson36@hotmail.com client_id=9e5f94...
+WARNING 2026-04-20 17:06:15,570 connectionpool Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F03F644E80>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')': /api/mail/read
+WARNING 2026-04-20 17:06:19,735 connectionpool Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F03F644CD0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')': /api/mail/read
+ERROR 2026-04-20 17:06:21,902 reg_views [IMAP][ERR] HTTPConnectionPool(host='45.77.35.79', port=5000): Max retries exceeded with url: /api/mail/read (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F03F644B20>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+INFO 2026-04-20 17:06:21,903 ReadMailBox Requesting access token for conelydearson36@hotmail.com
+INFO 2026-04-20 17:06:22,688 ReadMailBox Successfully obtained access token for conelydearson36@hotmail.com
+INFO 2026-04-20 17:06:23,631 reg_views [TN][GRAPH][PARSE] items=2
+INFO 2026-04-20 17:06:23,632 reg_views [TN][GRAPH][DONE] email=conelydearson36@hotmail.com hits=0
+INFO 2026-04-20 17:06:23,632 async_email_processor Email reading completed for conelydearson36@hotmail.com in 10.25s
+INFO 2026-04-20 17:06:23,634 reg_views [TN][RES] email=conelydearson36@hotmail.com results_count=0 error=None
+INFO 2026-04-20 17:06:23,634 reg_views [TN][RES] results={'results': [], 'error': None}
+INFO 2026-04-20 17:07:10,345 server Killed 0 pending application instances
+INFO 2026-04-20 17:07:10,383 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 17:07:13,342 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:07:13,342 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 17:07:13,342 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:07:13,342 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 17:07:14,463 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 17:07:14,714 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 17:07:14,795 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 17:07:15,440 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-04-20 17:07:22,025 verified_views [verified][search_api] office_param='' offices=['Hàn Mạc Tử', 'Trung Tiến', 'Bùi Việt'] query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 17:07:24,359 verified_views [verified][search_api] result_count=1055 creators=11
+INFO 2026-04-20 17:07:45,613 verified_views [verified][search_api] office_param='' offices=['Hàn Mạc Tử', 'Trung Tiến', 'Bùi Việt'] query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': 'dinhtranhmt'}
+INFO 2026-04-20 17:07:47,820 verified_views [verified][search_api] result_count=197 creators=11
+INFO 2026-04-20 17:08:04,790 server Killed 0 pending application instances
+INFO 2026-04-20 17:08:04,813 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 17:08:07,862 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:08:07,863 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 17:08:07,863 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:08:07,864 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 17:08:08,881 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 17:08:09,148 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 17:08:09,267 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 17:08:09,685 log Not Found: /handle-browser-close/
+WARNING 2026-04-20 17:08:09,748 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-20 17:10:45,577 log Not Found: /handle-browser-close/
+INFO 2026-04-20 17:18:12,921 server Killed 0 pending application instances
+INFO 2026-04-20 17:18:12,960 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 17:18:15,740 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:18:15,740 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 17:18:15,741 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:18:15,742 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 17:18:18,163 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 17:18:18,389 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 17:18:18,467 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+INFO 2026-04-20 17:18:32,080 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 17:18:33,455 verified_views [verified][search_api] result_count=1065
+WARNING 2026-04-20 17:19:01,816 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-04-20 17:24:30,146 server Killed 0 pending application instances
+INFO 2026-04-20 17:24:30,186 mongodb Successfully closed MongoDB connection
+INFO 2026-04-20 17:24:32,965 cli Starting server at tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:24:32,965 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2026-04-20 17:24:32,966 server Configuring endpoint tcp:port=8001:interface=0.0.0.0
+INFO 2026-04-20 17:24:32,967 server Listening on TCP address 0.0.0.0:8001
+INFO 2026-04-20 17:24:34,066 mongodb Attempting to connect to MongoDB (attempt 1/5)
+INFO 2026-04-20 17:24:34,284 mongodb Successfully created new MongoDB connection
+INFO 2026-04-20 17:24:34,375 verified_views [verified][employee_view] office_raw='Hàn Mạc Tử' user='admin'
+WARNING 2026-04-20 17:24:34,772 log Not Found: /handle-browser-close/
+WARNING 2026-04-20 17:24:34,926 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+ERROR 2026-04-20 17:24:36,451 log Internal Server Error: /api/fmail-balance/
+INFO 2026-04-20 17:24:37,309 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$in': ['success', 'resend link']}}
+INFO 2026-04-20 17:24:38,414 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 17:24:39,918 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 17:24:41,296 verified_views [verified][search_api] result_count=1065
+INFO 2026-04-20 17:24:44,405 verified_views [verified][search_api] employee='a' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'a', '$options': 'i'}}
+INFO 2026-04-20 17:24:45,648 verified_views [verified][search_api] result_count=572
+INFO 2026-04-20 17:24:51,303 verified_views [verified][search_api] employee='admin' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'admin', '$options': 'i'}}
+INFO 2026-04-20 17:24:52,538 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 17:24:56,788 verified_views [verified][search_api] employee='adminA' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'adminA', '$options': 'i'}}
+INFO 2026-04-20 17:24:58,038 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 17:24:58,287 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 17:24:59,603 verified_views [verified][search_api] result_count=1065
+INFO 2026-04-20 17:25:00,059 verified_views [verified][search_api] employee='TRAN' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'TRAN', '$options': 'i'}}
+INFO 2026-04-20 17:25:01,339 verified_views [verified][search_api] result_count=197
+INFO 2026-04-20 17:25:01,737 verified_views [verified][search_api] employee='tran' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'tran', '$options': 'i'}}
+INFO 2026-04-20 17:25:02,972 verified_views [verified][search_api] result_count=197
+INFO 2026-04-20 17:25:03,250 verified_views [verified][search_api] employee='dinhtranhmt' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'dinhtranhmt', '$options': 'i'}}
+INFO 2026-04-20 17:25:04,387 verified_views [verified][search_api] result_count=197
+INFO 2026-04-20 17:25:13,388 verified_views [verified][search_api] employee='tranhmt' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'tranhmt', '$options': 'i'}}
+INFO 2026-04-20 17:25:14,587 verified_views [verified][search_api] result_count=197
+INFO 2026-04-20 17:25:17,322 verified_views [verified][search_api] employee='' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}}
+INFO 2026-04-20 17:25:18,574 verified_views [verified][search_api] result_count=1065
+INFO 2026-04-20 17:25:19,009 verified_views [verified][search_api] employee='b' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'b', '$options': 'i'}}
+INFO 2026-04-20 17:25:20,178 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 17:25:22,621 verified_views [verified][search_api] employee='bui' query={'created_at': {'$regex': '^2026-04-20'}, 'status_account_TN': {'$ne': 'new'}, 'created_by': {'$regex': 'bui', '$options': 'i'}}
+INFO 2026-04-20 17:25:23,788 verified_views [verified][search_api] result_count=0
+INFO 2026-04-20 17:25:30,512 server Killed 0 pending application instances
+INFO 2026-04-20 17:25:30,543 mongodb Successfully closed MongoDB connection

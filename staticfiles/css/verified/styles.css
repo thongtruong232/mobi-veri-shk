@@ -659,3 +659,42 @@ body::before {
 
 /* Search loading state */
 .search-loading { display: flex; align-items: center; justify-content: center; gap: .35rem; }
+
+/* ==================== Autocomplete Employee ==================== */
+.autocomplete-wrapper { position: relative; }
+.autocomplete-suggestions {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0; right: 0;
+  z-index: 1050;
+  background: var(--bg-surface, #fff);
+  border: 1px solid rgba(61, 99, 221, 0.22);
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(30, 40, 80, 0.13);
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.autocomplete-item {
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-primary, #1a2236);
+  border-bottom: 1px solid rgba(61, 99, 221, 0.06);
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: rgba(61, 99, 221, 0.09);
+  color: var(--accent, #3d63dd);
+}
+.autocomplete-no-results {
+  padding: 8px 14px;
+  color: var(--text-secondary, #5a6582);
+  font-size: 0.875rem;
+  font-style: italic;
+}

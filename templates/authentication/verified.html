@@ -67,25 +67,9 @@ Goal:
     <div class="card shadow-sm mb-4 mx-3">
         <div class="card-body">
             <div class="row g-3">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <label class="form-label text-muted fw-bold">Office:</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light">
-                                <i class="fas fa-building"></i>
-                            </span>
-                            <select id="offices" class="form-select">
-                                <option value="">Tất cả</option>
-                                {% for office in offices %}
-                                    <option value="{{ office }}">{{ office }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="form-label text-muted fw-bold" id="statusLabel" style="cursor: pointer;">TextNow Status: (click to switch)</label>
+                        <label class="form-label text-muted fw-bold" id="statusLabel" style="cursor: pointer;">TextNow Status:</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light">
                                 <i class="fas fa-filter"></i>
@@ -102,21 +86,22 @@ Goal:
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <label class="form-label text-muted fw-bold">Created by:</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light">
-                                <i class="fas fa-user"></i>
-                            </span>
-                            <select id="createdBy" class="form-select">
-                                <option value="">All</option>
-                                <!-- Options populated dynamically by JS based on #offices selection -->
-                            </select>
+                        <label class="form-label text-muted fw-bold">Employee:</label>
+                        <div class="autocomplete-wrapper">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-user-search"></i>
+                                </span>
+                                <input type="text" id="searchEmployee" class="form-control"
+                                    placeholder="Search by employee name..." autocomplete="off">
+                            </div>
+                            <div id="employeeSuggestions" class="autocomplete-suggestions" style="display: none;"></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 d-flex align-items-end">
+                <div class="col-md-4 d-flex align-items-end">
                     <button type="button" class="btn btn-primary w-100" id="searchButton" onclick="searchRecords()">
                         <span class="d-flex align-items-center justify-content-center">
                             <span class="search-text">
