@@ -815,10 +815,12 @@ const ApiService = (function () {
     const fmailBadge = document.getElementById("fmailBalance");
     const phapsuBadge = document.getElementById("phapsuBalance");
 
+    // Always attach .catch() — even when badge is null — to prevent unhandled
+    // promise rejections from firing the global error toast.
     const updateBadge = (badge, promise) => {
-      if (!badge) return;
       promise
         .then((data) => {
+          if (!badge) return;
           if (data.success && data.data?.money !== undefined) {
             badge.textContent =
               data.data.money.toLocaleString("vi-VN") + " VND";
@@ -827,17 +829,19 @@ const ApiService = (function () {
           }
         })
         .catch(() => {
-          badge.textContent = "?";
+          if (badge) badge.textContent = "?";
         });
     };
 
-    if (apiData.api_dongvan) {
+    // Guard: only fire the API call when the badge element is present AND the
+    // API key is configured, so we never create an unhandled promise.
+    if (apiData.api_dongvan && dongvanBadge) {
       updateBadge(dongvanBadge, getDongVanBalance());
     }
-    if (apiData.api_fmail) {
+    if (apiData.api_fmail && fmailBadge) {
       updateBadge(fmailBadge, getFMailBalance());
     }
-    if (apiData.api_phapsu) {
+    if (apiData.api_phapsu && phapsuBadge) {
       updateBadge(phapsuBadge, getPhapSuBalance());
     }
   }

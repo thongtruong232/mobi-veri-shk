@@ -12,4 +12,4 @@ EXPOSE 8001
 
 # Start uvicorn ASGI server (default 1 workers, overridable via UVICORN_WORKERS env)
 ENV UVICORN_WORKERS=1
-CMD ["sh", "-c", "uvicorn WebDjango.asgi:application --host 0.0.0.0 --port 8001 --workers ${UVICORN_WORKERS}"]
+CMD ["sh", "-c", "uvicorn WebDjango.asgi:application --host 0.0.0.0 --port 8005 --workers ${UVICORN_WORKERS}"]
